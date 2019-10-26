@@ -12,6 +12,7 @@ import Colors from './constants/Colors';
 import MainNavigator from './Navigation/MainNavigator';
 
 import { firebase as firebaseConfig } from './config';
+import LocationEnableModal from './Components/LocationEnableModal';
 export default class App extends React.Component {
 
   state = {
@@ -44,6 +45,7 @@ export default class App extends React.Component {
           <View style={{ width: '100%', height: Constants.statusBarHeight, backgroundColor: Colors.tintColor }} />
           <Provider store={store}>
             <Root>
+              <LocationEnableModal />
               <MainNavigator />
             </Root>
           </Provider>
