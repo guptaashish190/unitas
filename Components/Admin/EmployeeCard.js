@@ -31,7 +31,7 @@ class EmployeeCard extends Component {
                 buttonText: 'Ok',
             });
         } else {
-            this.props.navigation.navigate('Track', { id: this.props.id });
+            this.props.navigation.navigate('Track', { id: this.props.id, user: this.props.data });
         }
     }
 

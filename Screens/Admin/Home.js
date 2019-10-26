@@ -15,8 +15,15 @@ class Home extends Component {
         empids: null,
     }
 
+    componentWillUnmount() {
+        this.fdb.off('value');
+    }
+
     componentDidMount() {
-        firebase.database().ref('Employees/').on('value', (snapshot) => {
+        const ref = firebase.database().ref('Employees/');
+        this.fdb = ref;
+
+        ref.on('value', (snapshot) => {
             console.log(snapshot.val());
             this.setState({
                 empids: Object.keys(snapshot.val()),
@@ -44,7 +51,6 @@ class Home extends Component {
         return (
             <View style={styles.container}>
                 <HeaderComponent title="Employee Status" />
-
                 <ScrollView>
                     {this._getEmployeeCards()}
                 </ScrollView>

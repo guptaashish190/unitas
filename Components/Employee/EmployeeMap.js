@@ -43,7 +43,9 @@ class EmployeeMap extends Component {
 
             const emp_location = snapshot.val();
             if (emp_location === null) {
-                firebase.database().ref(`emp_locations/${id}`).set({
+                const ref1 = firebase.database().ref(`emp_locations/${id}`);
+                this.ref1 = ref1;
+                ref1.set({
                     distanceTravelled: 0,
                     coordinates: location,
                     routeCoordinates: [location],
@@ -56,7 +58,9 @@ class EmployeeMap extends Component {
                 distanceTravelled += Utils.calcDistance(location, emp_location.coordinates);
             }
 
-            firebase.database().ref(`emp_locations/${id}`).set({
+            const ref2 = firebase.database().ref(`emp_locations/${id}`);
+            this.ref2 = ref2;
+            ref2.set({
                 distanceTravelled,
                 coordinates: location,
                 routeCoordinates: [...emp_location.routeCoordinates, location],
@@ -90,7 +94,6 @@ class EmployeeMap extends Component {
         // });
         await AsyncStorage.setItem('currentUser', JSON.stringify(this.props.user));
 
-
         console.log("starting loc services");
         Location.startLocationUpdatesAsync(TASK_NAME, {
             accuracy: Location.Accuracy.Balanced,
@@ -105,45 +108,6 @@ class EmployeeMap extends Component {
         });
 
     }
-    // watchPosition = () => {
-    //     this.watchID = navigator.geolocation.watchPosition(
-    //         position => {
-    //             const newCoordinate = {
-    //                 latitude: position.coords,
-    //                 longitude: position.coords
-    //             };
-    //             // EmployeeMap.setLocationCoordinates(newCoordinate, this.props.user.id);
-
-    //             // console.log(position.coords);
-    //             // let { coordinate, routeCoordinates, distanceTravelled } = this.state;
-    //             // const { latitude, longitude } = position.coords;
-
-    //             // const newCoordinate = {
-    //             //     latitude,
-    //             //     longitude
-    //             // };
-    //             // if (Platform.OS === "android") {
-    //             //     if (this.marker) {
-    //             //         // this.marker._component.animateMarkerToCoordinate(
-    //             //         //     newCoordinate,
-    //             //         //     500
-    //             //         // );
-    //             //     }
-    //             // } else {
-    //             //     coordinate.timing(newCoordinate).start();
-    //             // }
-    //             // distanceTravelled += Math.floor(Utils.calcDistance(this.state.coordinate, newCoordinate));
-    //             // this.setState({
-    //             //     coordinate: newCoordinate,
-    //             //     routeCoordinates: routeCoordinates.concat([newCoordinate]),
-    //             //     distanceTravelled,
-    //             //     prevLatLng: newCoordinate
-    //             // });
-    //         },
-    //         error => console.log(error),
-    //         { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-    //     );
-    // }
     getMapRegion = () => ({
         latitude: this.state.coordinates.latitude,
         longitude: this.state.coordinates.longitude,
@@ -151,9 +115,7 @@ class EmployeeMap extends Component {
         longitudeDelta: 0.0421,
     });
     _getMap = () => {
-        if (this.state.showMap
-            && this.state.coordinates.latitude
-            && this.state.coordinates.longitude) {
+        if (this.state.showMap) {
 
             return (<MapView
                 style={styles.mapView}
@@ -189,7 +151,7 @@ class EmployeeMap extends Component {
 
     _getDistanceString = () => {
         if (this.state.distanceTravelled > 1000) {
-            return `Distance Travelled: ${this.state.distanceTravelled / 1000} Km`
+            return `Distance Travelled: ${(this.state.distanceTravelled / 1000).toFixed(2)} Km`
         }
         return `Distance Travelled: ${this.state.distanceTravelled} m`
     }
