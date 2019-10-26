@@ -1,0 +1,1 @@
+export const STATUS_CHANGE = "STATUS_CHANGE";

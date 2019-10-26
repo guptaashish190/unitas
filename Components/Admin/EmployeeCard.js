@@ -3,20 +3,19 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import { Button } from 'native-base';
 import { Toast } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import Colors from '../../constants/Colors';
 
 class EmployeeCard extends Component {
-
-
     _getStatusStyle = () => {
 
         let color = '#828282';
 
         switch (this.props.data.status) {
             case 'Offline':
-                color = '#aaa';
+                color = Colors.offline;
                 break;
             case 'Active':
-                color = '#94ff94';
+                color = Colors.active;
         }
 
         return ({
@@ -38,26 +37,24 @@ class EmployeeCard extends Component {
 
     render() {
         return (
-            <TouchableOpacity onPress={() => this._goToTrackScreen()}>
-                <View style={[styles.container, this._getStatusStyle()]}>
-                    <Image style={styles.image} source={{ uri: this.props.data.photo }} />
-                    <View style={styles.rightContainer}>
-                        <Text style={styles.name}>{this.props.data.name}</Text>
-                        <Text>ID: {this.props.data.empId}</Text>
-                        <Text style={styles.statusText}>Status: {this.props.data.status}</Text>
+            <View style={[styles.container, this._getStatusStyle()]}>
+                <Image style={styles.image} source={{ uri: this.props.data.photo }} />
+                <View style={styles.rightContainer}>
+                    <Text style={styles.name}>{this.props.data.name}</Text>
+                    <Text>ID: {this.props.data.empId}</Text>
+                    <Text style={styles.statusText}>Status: {this.props.data.status}</Text>
 
-                        <View style={styles.buttons}>
-                            <Button style={[styles.button, styles.viewButton]}>
-                                <Text>View</Text>
-                            </Button>
-                            <Button style={[styles.button, styles.viewButton]}>
-                                <Text>History</Text>
-                            </Button>
-                        </View>
+                    <View style={styles.buttons}>
 
+                        <Button onPress={() => this._goToTrackScreen()} style={[styles.button, styles.viewButton]}>
+                            <Text>View</Text>
+                        </Button>
+                        <Button style={[styles.button, styles.viewButton]}>
+                            <Text>History</Text>
+                        </Button>
                     </View>
                 </View>
-            </TouchableOpacity>
+            </View>
         );
     }
 }
