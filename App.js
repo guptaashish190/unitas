@@ -2,7 +2,6 @@ import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Icon } from 'expo';
 import * as Font from 'expo-font';
-import PubNubReact from 'pubnub-react';
 import Constants from 'expo-constants';
 import { Root } from 'native-base';
 import { Provider } from 'react-redux';
@@ -11,6 +10,7 @@ import firebase from 'firebase';
 import store from './store';
 import Colors from './constants/Colors';
 import MainNavigator from './Navigation/MainNavigator';
+
 import { firebase as firebaseConfig } from './config';
 export default class App extends React.Component {
 

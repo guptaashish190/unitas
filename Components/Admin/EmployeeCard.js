@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { Button } from 'native-base';
+import { Toast } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+
 class EmployeeCard extends Component {
 
 
@@ -24,17 +26,24 @@ class EmployeeCard extends Component {
     }
 
     _goToTrackScreen = () => {
-        this.props.navigation.navigate('Track');
+        if (this.props.data.status == 'Offline') {
+            Toast.show({
+                text: `${this.props.data.name} is currently offline.`,
+                buttonText: 'Ok',
+            });
+        } else {
+            this.props.navigation.navigate('Track', { id: this.props.id });
+        }
     }
 
     render() {
         return (
             <TouchableOpacity onPress={() => this._goToTrackScreen()}>
                 <View style={[styles.container, this._getStatusStyle()]}>
-                    <Image style={styles.image} source={this.props.data.photo} />
+                    <Image style={styles.image} source={{ uri: this.props.data.photo }} />
                     <View style={styles.rightContainer}>
                         <Text style={styles.name}>{this.props.data.name}</Text>
-                        <Text>ID: {this.props.data.id}</Text>
+                        <Text>ID: {this.props.data.empId}</Text>
                         <Text style={styles.statusText}>Status: {this.props.data.status}</Text>
 
                         <View style={styles.buttons}>

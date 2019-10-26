@@ -1,19 +1,41 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import HeaderComponent from '../../Components/Common/Header';
 import shortid from 'shortid';
-
-import { employees } from '../../Data/Employees';
+import firebase from 'firebase';
+import { Spinner } from 'native-base';
+// import { employees } from '../../Data/Employees';
+import HeaderComponent from '../../Components/Common/Header';
 import EmployeeCard from '../../Components/Admin/EmployeeCard';
+import Colors from '../../constants/Colors';
 
 class Home extends Component {
 
+    state = {
+        employees: null,
+        empids: null,
+    }
+
+    componentDidMount() {
+        firebase.database().ref('Employees/').on('value', (snapshot) => {
+            console.log(snapshot.val());
+            this.setState({
+                empids: Object.keys(snapshot.val()),
+                employees: snapshot.val(),
+            });
+        });
+    }
+
+
     _getEmployeeCards = () => {
-        return employees.map(emp => {
+        if (!this.state.empids) {
+            return <Spinner color={Colors.tintColor} />
+        }
+        return this.state.empids.map(id => {
             return <EmployeeCard
                 navigation={this.props.navigation}
                 key={shortid.generate()}
-                data={emp}
+                data={this.state.employees[id]}
+                id={id}
             />
         });
     }

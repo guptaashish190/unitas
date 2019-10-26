@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import firebase from 'firebase';
 import MapView, { Marker } from 'react-native-maps';
 import HeaderComponent from '../../Components/Common/Header';
+import { Toast } from 'native-base';
 
 class Track extends Component {
 
@@ -13,28 +14,39 @@ class Track extends Component {
         },
         marker: {
             title: "Ashish Gupta",
-        }
+        },
+        empid: null
     }
 
     componentDidMount() {
-        this._getEmployeeLocation();
+
+        const empid = this.props.navigation.getParam('id', null);
+        this.setState({
+            empid
+        }, () => {
+            if (this.state.empid) {
+                this._getEmployeeLocation();
+            }
+        });
     }
     _getEmployeeLocation() {
-        firebase.database().ref('Employees/2ozBcyRGLOZjOR73g6FHhpIYLuz2').once('value', (snapshot) => {
-            console.log(snapshot.val());
+        firebase.database().ref(`Employees/${this.state.empid}`).on('value', (snapshot) => {
+
+            const employeeDetail = snapshot.val();
+            console.log(employeeDetail);
+            if (employeeDetail.status === 'Offline') {
+                Toast.show({
+                    text: `${employeeDetail.name} is currently offline.`,
+                    buttonText: 'Back',
+                    onClose: () => {
+                        this.props.navigation.goBack();
+                    }
+                });
+            }
             this.setState({
                 currentLocation: {
-                    latitude: snapshot.val().currentLocation.latitude,
-                    longitude: snapshot.val().currentLocation.longitude,
-                },
-            });
-        });
-        firebase.database().ref('Employees/2ozBcyRGLOZjOR73g6FHhpIYLuz2').on('value', (snapshot) => {
-            console.log(snapshot.val());
-            this.setState({
-                currentLocation: {
-                    latitude: snapshot.val().currentLocation.latitude,
-                    longitude: snapshot.val().currentLocation.longitude,
+                    latitude: employeeDetail.currentLocation.latitude,
+                    longitude: employeeDetail.currentLocation.longitude,
                 },
             });
         });
@@ -42,19 +54,17 @@ class Track extends Component {
     _getMap = () => {
         if (this.state.currentLocation.latitude && this.state.currentLocation.longitude) {
             console.log(this.state.currentLocation);
+
+            const initialRegion = {
+                latitude: this.state.currentLocation.latitude,
+                longitude: this.state.currentLocation.longitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+            };
+
             return (<MapView
-                initialRegion={{
-                    latitude: this.state.currentLocation.latitude,
-                    longitude: this.state.currentLocation.longitude,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                }}
-                region={{
-                    latitude: this.state.currentLocation.latitude,
-                    longitude: this.state.currentLocation.longitude,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                }}
+                initialRegion={initialRegion}
+                region={initialRegion}
                 style={styles.mapView}
             >
                 <Marker

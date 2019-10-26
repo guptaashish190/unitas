@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "284958741294",
+    "firebase_url": "https://unitas-58197.firebaseio.com",
+    "project_id": "unitas-58197",
+    "storage_bucket": "unitas-58197.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:284958741294:android:8ade5722d33f19194620bf",
+        "android_client_info": {
+          "package_name": "com.unitas.unitas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "284958741294-7j1ke88jnqlgl6pnad5aanerrttf28oo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDq5OUWlnF4n4_7bGXSCQFC--21BTPRyBo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "284958741294-7j1ke88jnqlgl6pnad5aanerrttf28oo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

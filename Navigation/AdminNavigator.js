@@ -6,8 +6,8 @@ import Track from '../Screens/Admin/Track';
 import AdminHome from '../Screens/Admin/Home';
 
 export default createAppContainer(createStackNavigator({
-    Track: Track,
     AdminHome,
+    Track: Track,
 }, {
     defaultNavigationOptions: {
         header: null
