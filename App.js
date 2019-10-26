@@ -7,6 +7,7 @@ import { Root } from 'native-base';
 import { Provider } from 'react-redux';
 import firebase from 'firebase';
 
+
 import store from './store';
 import Colors from './constants/Colors';
 import MainNavigator from './Navigation/MainNavigator';

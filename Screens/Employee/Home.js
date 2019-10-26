@@ -30,7 +30,7 @@ class Home extends Component {
                             <Text style={styles.yourMapWillShowText}>Your map will show up here!</Text>
                         </View>
                         :
-                        <EmployeeMap location={this.props.location} />
+                        <EmployeeMap user={this.props.user} location={this.props.location} />
                     }
                     {this.props.user.status === 'Active' ?
                         <Button danger style={styles.goOffline} onPress={() => this.onStatusChange('Offline')}>

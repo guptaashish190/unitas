@@ -20,9 +20,10 @@ module.exports = {
                         if (status.locationServicesEnabled) {
                             // if granted and location services enabled
                             // get location .. and set state
-
+                            console.log("enable");
                             Location.getCurrentPositionAsync({}).then(location => {
 
+                                console.log("loc");
                                 const loc = {
                                     latitude: location.coords.latitude,
                                     longitude: location.coords.longitude
