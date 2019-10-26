@@ -2,9 +2,12 @@ import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Icon } from 'expo';
 import * as Font from 'expo-font';
+import PubNubReact from 'pubnub-react';
 import Constants from 'expo-constants';
 import { Root } from 'native-base';
 import { Provider } from 'react-redux';
+import firebase from 'firebase';
+
 import store from './store';
 import Colors from './constants/Colors';
 import MainNavigator from './Navigation/MainNavigator';
@@ -13,6 +16,23 @@ export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
   };
+
+  constructor(props) {
+
+    super(props);
+
+    // Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDHjEb-6XUeOnAszwuXO3GAAnqV0ttgZWc",
+      authDomain: "unitas-58197.firebaseapp.com",
+      databaseURL: "https://unitas-58197.firebaseio.com",
+      storageBucket: "unitas-58197.appspot.com",
+      projectId: "unitas-58197",
+    };
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+  }
 
   render() {
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
