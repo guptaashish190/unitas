@@ -40,6 +40,7 @@ class AdminLogin extends Component {
         //       type: 'danger'
         //     });
         //   });
+        this.props.navigation.navigate("Admin");
     }
 
     isError = type => {

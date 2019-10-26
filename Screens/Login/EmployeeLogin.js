@@ -40,6 +40,7 @@ class EmployeeLogin extends Component {
         //       type: 'danger'
         //     });
         //   });
+        this.props.navigation.navigate("Employee");
     }
 
     isError = type => {

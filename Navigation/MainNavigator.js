@@ -1,16 +1,18 @@
 import React from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import ChooseType from '../Screens/Login/ChooseType.js';
-import AdminLogin from '../Screens/Login/AdminLogin.js';
+import ChooseType from '../Screens/Login/ChooseType';
+import AdminLogin from '../Screens/Login/AdminLogin';
 import EmployeeLogin from '../Screens/Login/EmployeeLogin';
-
-// Login Stack Navigation
+import AdminNavigator from './AdminNavigator.js';
+import EmployeeNavigator from './EmployeeNavigator';
 
 export default createAppContainer(createStackNavigator({
     ChooseType,
     AdminLogin,
     EmployeeLogin,
+    Admin: AdminNavigator,
+    Employee: EmployeeNavigator,
 }, {
     defaultNavigationOptions: {
         header: null
