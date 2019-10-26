@@ -26,6 +26,19 @@
     "ios": {
       "supportsTablet": true
     },
+    "expo": {
+      "name": "unitas",
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "ios": {
+        "bundleIdentifier": "com.unitas.unitas"
+      },
+      "android": {
+        "package": "com.unitas.unitas"
+      }
+    },
     "android": {
       "googleServicesFile": "./google-services.json"
     }
