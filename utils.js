@@ -2,6 +2,8 @@
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import { Toast } from 'native-base';
+import haversine from 'haversine';
+
 import store from './store';
 import { ToggleEnableLocationModal, SetLocation } from './Actions/UserActions';
 
@@ -20,6 +22,7 @@ module.exports = {
                             // get location .. and set state
 
                             Location.getCurrentPositionAsync({}).then(location => {
+
                                 const loc = {
                                     latitude: location.coords.latitude,
                                     longitude: location.coords.longitude
@@ -48,6 +51,9 @@ module.exports = {
         });
     },
 
+    calcDistance: (prevLatLng, newLatLng) => {
+        return haversine(prevLatLng, newLatLng, { unit: 'meter' }) || 0;
+    },
     // Map the address string from the address component
     getAddressStringFromLocationObject: (locationObject) => {
         if (locationObject) {
