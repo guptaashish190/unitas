@@ -11,6 +11,7 @@ import firebase from 'firebase';
 import store from './store';
 import Colors from './constants/Colors';
 import MainNavigator from './Navigation/MainNavigator';
+import { firebase as firebaseConfig } from './config';
 export default class App extends React.Component {
 
   state = {
@@ -22,13 +23,6 @@ export default class App extends React.Component {
     super(props);
 
     // Initialize Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyDHjEb-6XUeOnAszwuXO3GAAnqV0ttgZWc",
-      authDomain: "unitas-58197.firebaseapp.com",
-      databaseURL: "https://unitas-58197.firebaseio.com",
-      storageBucket: "unitas-58197.appspot.com",
-      projectId: "unitas-58197",
-    };
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
