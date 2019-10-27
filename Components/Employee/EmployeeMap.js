@@ -38,13 +38,18 @@ class EmployeeMap extends Component {
         distanceTravelled: 0,
     }
 
-    static setLocationCoordinates = (location, id) => {
-        firebase.database().ref(`emp_locations/${id}`).once('value', function (snapshot) {
+    componentWillUnmount() {
+    }
+
+    static setLocationCoordinates(location, id) {
+        const empRef = firebase.database().ref(`emp_locations/${id}`);
+
+        empRef.once('value', function (snapshot) {
 
             const emp_location = snapshot.val();
             if (emp_location === null) {
                 const ref1 = firebase.database().ref(`emp_locations/${id}`);
-                this.ref1 = ref1;
+
                 ref1.set({
                     distanceTravelled: 0,
                     coordinates: location,
@@ -59,7 +64,7 @@ class EmployeeMap extends Component {
             }
 
             const ref2 = firebase.database().ref(`emp_locations/${id}`);
-            this.ref2 = ref2;
+
             ref2.set({
                 distanceTravelled,
                 coordinates: location,

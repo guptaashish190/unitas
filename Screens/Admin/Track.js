@@ -19,6 +19,11 @@ class Track extends Component {
         distanceTravelled: 0,
     }
 
+    componentWillUnmount() {
+        this.empLocRef.off('value');
+        this.empRef.off('value');
+    }
+
     componentDidMount() {
 
         const empid = this.props.navigation.getParam('id', null);
@@ -33,7 +38,20 @@ class Track extends Component {
         });
     }
     _getEmployeeLocation() {
-        firebase.database().ref(`Employees/${this.state.empid}`).on('value', (snapshot) => {
+        const empRef = firebase.database().ref(`Employees/${this.state.empid}`)l
+        const empLocRef = firebase.database().ref(`emp_locations/${this.state.empid}`);
+
+        this.empRef = empRef;
+        this.empLocRef = empLocRef;
+
+        empLocRef.on('value', (snapshot) => {
+            const emp_loc = snapshot.val();
+            this.setState({
+                showMap: true,
+                ...emp_loc
+            });
+        });
+        empRef.on('value', (snapshot) => {
 
             const employeeDetail = snapshot.val();
             console.log(employeeDetail);
@@ -47,13 +65,6 @@ class Track extends Component {
                 });
                 return;
             }
-        });
-        firebase.database().ref(`emp_locations/${this.state.empid}`).on('value', (snapshot) => {
-            const emp_loc = snapshot.val();
-            this.setState({
-                showMap: true,
-                ...emp_loc
-            });
         });
     }
 
