@@ -1,4 +1,4 @@
-import { STATUS_CHANGE, TOGGLE_ENABLE_LOCATION_MODAL_VISIBLE, SET_LOCATION } from "../Actions/Types/UserTypes";
+import { STATUS_CHANGE, TOGGLE_ENABLE_LOCATION_MODAL_VISIBLE, SET_LOCATION, SET_CURRENT_USER_MAP_SESSION_INDEX } from "../Actions/Types/UserTypes";
 
 // Initial State
 const INITIAL_STATE = {
@@ -10,6 +10,7 @@ const INITIAL_STATE = {
     },
     location: null,
     isEnableLocationModalVisible: false,
+    currentMapSessionIndex: 'axnsuna'
 }
 
 const UserReducer = (state = INITIAL_STATE, action) => {
@@ -22,6 +23,8 @@ const UserReducer = (state = INITIAL_STATE, action) => {
             return { ...state, isEnableLocationModalVisible: !state.isEnableLocationModalVisible };
         case SET_LOCATION:
             return { ...state, location: action.payload }
+        case SET_CURRENT_USER_MAP_SESSION_INDEX:
+            return { ...state, user: { ...state.user, currentMapSessionIndex: action.payload } }
         default:
             return state;
     }

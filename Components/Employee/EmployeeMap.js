@@ -1,33 +1,19 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Platform, Image, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, Image, AsyncStorage } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
-import { Toast, Spinner } from 'native-base';
+import { Spinner } from 'native-base';
 import firebase from 'firebase';
 import * as Location from 'expo-location';
-import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
-
-import Utils from '../../utils';
 import Colors from '../../constants/Colors';
 
-const FLAG = require('../../assets/images/green_flag.png');
+import { TASK_NAME } from '../../constants/BackgroundTasksConstants';
 
-const TASK_NAME = "watch_position";
-TaskManager.defineTask(TASK_NAME, async ({ data, error }) => {
-    if (error) {
-        console.log(error);
-        return;
-    }
-    if (data) {
-        const user = await EmployeeMap.getCurrentUser();
-        const coordinates = {
-            latitude: data.locations[0].coords.latitude,
-            longitude: data.locations[0].coords.longitude,
-        }
-        console.log(coordinates);
-        EmployeeMap.setLocationCoordinates(coordinates, user.id);
-    }
-});
+// Defines background task for setting the location to firebase
+import './BackgroundTask';
+
+
+const FLAG = require('../../assets/images/green_flag.png');
 
 class EmployeeMap extends Component {
 
@@ -39,56 +25,17 @@ class EmployeeMap extends Component {
     }
 
     componentWillUnmount() {
+        TaskManager.unregisterTaskAsync(TASK_NAME);
+        this.empLocRef.off('value');
     }
 
-    static setLocationCoordinates(location, id) {
-        const empRef = firebase.database().ref(`emp_locations/${id}`);
-
-        empRef.once('value', function (snapshot) {
-
-            const emp_location = snapshot.val();
-            if (emp_location === null) {
-                const ref1 = firebase.database().ref(`emp_locations/${id}`);
-
-                ref1.set({
-                    distanceTravelled: 0,
-                    coordinates: location,
-                    routeCoordinates: [location],
-                });
-                return;
-            }
-
-            let distanceTravelled = emp_location.distanceTravelled;
-            if (emp_location.coordinates) {
-                distanceTravelled += Utils.calcDistance(location, emp_location.coordinates);
-            }
-
-            const ref2 = firebase.database().ref(`emp_locations/${id}`);
-
-            ref2.set({
-                distanceTravelled,
-                coordinates: location,
-                routeCoordinates: [...emp_location.routeCoordinates, location],
-            });
-
-        });
-
-    }
-
-    static getCurrentUser = async () => {
-        const currentUser = await AsyncStorage.getItem('currentUser');
-        return JSON.parse(currentUser);
-    }
-    componentDidMount = async () => {
+    async componentDidMount() {
         // Utils.getLocation().then((location) => {
         //     console.log(location);
         //     this.setState({
         //         showMap: true,
         //         coordinate: location
         //     }, () => {
-
-
-
         //     });
         // }).catch((err) => {
         //     console.log(err);
@@ -104,14 +51,19 @@ class EmployeeMap extends Component {
             accuracy: Location.Accuracy.Balanced,
         });
 
-        firebase.database().ref(`emp_locations/${this.props.user.id}`).on('value', (snapshot) => {
-            const emp_loc = snapshot.val();
-            this.setState({
-                showMap: true,
-                ...emp_loc
-            });
-        });
+        const empLocRef = firebase.database().ref(`emp_locations/${this.props.user.id}/${this.props.user.currentMapSessionIndex}`)
+        this.empLocRef = empLocRef;
 
+        empLocRef.on('value', (snapshot) => {
+            const emp_loc = snapshot.val();
+            console.log("location hai:", emp_loc);
+            if (emp_loc) {
+                this.setState({
+                    showMap: true,
+                    ...emp_loc
+                });
+            }
+        });
     }
     getMapRegion = () => ({
         latitude: this.state.coordinates.latitude,
@@ -158,7 +110,7 @@ class EmployeeMap extends Component {
         if (this.state.distanceTravelled > 1000) {
             return `Distance Travelled: ${(this.state.distanceTravelled / 1000).toFixed(2)} Km`
         }
-        return `Distance Travelled: ${this.state.distanceTravelled} m`
+        return `Distance Travelled: ${Math.round(this.state.distanceTravelled)} m`
     }
 
     render() {

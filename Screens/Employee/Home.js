@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { connect } from 'react-redux';
+import firebase from 'firebase';
+import shortid from 'shortid';
 import HeaderComponent from '../../Components/Common/Header';
 import EmployeeStatusBar from '../../Components/Employee/EmployeeStatusBar';
 import ChangeStatus from '../../Components/Employee/ChangeStatus';
-import { StatusChange } from '../../Actions/UserActions';
+import { StatusChange, setCurrentMapSessionIndex } from '../../Actions/UserActions';
 import EmployeeMap from '../../Components/Employee/EmployeeMap';
 import Colors from '../../constants/Colors';
 import { Content, Button } from 'native-base';
@@ -12,8 +14,27 @@ import { Content, Button } from 'native-base';
 class Home extends Component {
 
     onStatusChange = status => {
-        this.props.changeStatus(status);
-        this.forceUpdate();
+
+        if (status === 'Active') {
+            firebase.database().ref(`Employees/${this.props.user.id}`).once('value').then(snapshot => {
+                const user = snapshot.val();
+
+                const newSessionId = shortid.generate();
+                firebase.database().ref(`Employees/${this.props.user.id}`).set({
+                    ...user,
+                    currentMapSessionIndex: newSessionId,
+                }).then(() => {
+                    this.props.setCurrentMapSessionIndex(newSessionId);
+                    this.props.changeStatus(status);
+                    this.forceUpdate();
+                });
+
+            });
+        } else {
+            this.props.changeStatus(status);
+            this.forceUpdate();
+        }
+
     }
 
     render() {
@@ -78,5 +99,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     changeStatus: status => dispatch(StatusChange(status)),
+    setCurrentMapSessionIndex: index => dispatch(setCurrentMapSessionIndex(index)),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

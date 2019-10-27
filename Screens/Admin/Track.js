@@ -8,6 +8,7 @@ import { Toast, Spinner, Content } from 'native-base';
 import Colors from '../../constants/Colors';
 
 const FLAG = require('../../assets/images/green_flag.png');
+
 class Track extends Component {
 
     state = {
@@ -38,23 +39,23 @@ class Track extends Component {
         });
     }
     _getEmployeeLocation() {
-        const empRef = firebase.database().ref(`Employees/${this.state.empid}`)l
-        const empLocRef = firebase.database().ref(`emp_locations/${this.state.empid}`);
+        const empRef = firebase.database().ref(`Employees/${this.state.empid}/${this.state.user.currentMapSessionIndex}`);
+        const empLocRef = firebase.database().ref(`emp_locations/${this.state.empid}/${this.state.user.currentMapSessionIndex}`);
 
         this.empRef = empRef;
         this.empLocRef = empLocRef;
 
         empLocRef.on('value', (snapshot) => {
             const emp_loc = snapshot.val();
-            this.setState({
-                showMap: true,
-                ...emp_loc
-            });
+            if (emp_loc) {
+                this.setState({
+                    showMap: true,
+                    ...emp_loc
+                });
+            }
         });
         empRef.on('value', (snapshot) => {
-
             const employeeDetail = snapshot.val();
-            console.log(employeeDetail);
             if (employeeDetail.status === 'Offline') {
                 Toast.show({
                     text: `${employeeDetail.name} is currently offline.`,
@@ -114,7 +115,7 @@ class Track extends Component {
         if (this.state.distanceTravelled > 1000) {
             return `Distance Travelled: ${(this.state.distanceTravelled / 1000).toFixed(2)} Km`
         }
-        return `Distance Travelled: ${this.state.distanceTravelled} m`
+        return `Distance Travelled: ${Math.round(this.state.distanceTravelled)} m`
     }
 
     render() {
