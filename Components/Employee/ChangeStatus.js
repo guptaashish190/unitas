@@ -11,7 +11,7 @@ class ChangeStatus extends Component {
         this.setState({
             selected: value
         });
-        this.props.onStatusChange(value);
+        this.props.processStatusChange(value);
     }
     render() {
         return (

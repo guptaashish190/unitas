@@ -53,7 +53,8 @@ module.exports = {
     },
 
     calcDistance: (prevLatLng, newLatLng) => {
-        return haversine(prevLatLng, newLatLng, { unit: 'meter' }) || 0;
+        const distance = haversine(prevLatLng, newLatLng, { unit: 'meter' }) || 0;
+        return Math.round(distance);
     },
     // Map the address string from the address component
     getAddressStringFromLocationObject: (locationObject) => {
