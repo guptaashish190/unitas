@@ -69,7 +69,9 @@ class Home extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <HeaderComponent title={`Welcome ${this.props.user.name}!`} />
+                <HeaderComponent
+                    openDrawer={this.props.navigation.openDrawer}
+                    title={`Welcome ${this.props.user.name}!`} />
                 <Content contentContainerStyle={{ flex: 1 }}>
                     <EmployeeStatusBar
                         toggleStatus={this.processStatusChange}

@@ -33,13 +33,18 @@ class MapScreen extends Component {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
     });
-    _onLayout() {
-        if (this.state.map) {
-            setTimeout(() => {
-                this.mapRef.fitToCoordinates(this.state.map.routeCoordinates, { animated: true })
-            }, 1000);
 
-        }
+    componentWillUnmount() {
+        clearTimeout(this.fitTimeout);
+    }
+    _onLayout() {
+        this.fitTimeout = setTimeout(() => {
+            if (this.state.map) {
+                this.mapRef.fitToCoordinates(this.state.map.routeCoordinates, { animated: true })
+
+            }
+        }, 1000);
+
     }
     _getMap = () => {
         if (this.state.map) {

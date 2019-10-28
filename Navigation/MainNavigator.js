@@ -8,8 +8,8 @@ import AdminNavigator from './AdminNavigator.js';
 import EmployeeNavigator from './EmployeeNavigator';
 
 export default createAppContainer(createStackNavigator({
-    Admin: AdminNavigator,
     Employee: EmployeeNavigator,
+    Admin: AdminNavigator,
     ChooseType,
     AdminLogin,
     EmployeeLogin,

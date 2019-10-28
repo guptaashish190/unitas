@@ -15,7 +15,7 @@ class MapHistoryCard extends Component {
     }
 
     _showMap = () => {
-        this.props.navigation.navigate('MapScreen', { mapId: this.props.mapId, map: this.props.map });
+        this.props.navigation.navigate('EmpMapScreen', { mapId: this.props.mapId, map: this.props.map });
     }
 
 

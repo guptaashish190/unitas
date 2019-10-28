@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import firebase from 'firebase';
+import { connect } from 'react-redux';
 import shortid from 'shortid';
 import HeaderComponent from '../../Components/Common/Header';
 import { Content, Spinner } from 'native-base';
-import MapHistoryCard from '../../Components/Admin/MapHistoryCard';
+import MapHistoryCard from '../../Components/Common/MapHistoryCard';
 
 class History extends Component {
 
@@ -18,14 +19,23 @@ class History extends Component {
 
     componentDidMount() {
 
-        const empid = this.props.navigation.getParam('id', null);
-        const user = this.props.navigation.getParam('user', null);
-        this.setState({
-            empid,
-            user
-        }, () => {
-            this._getEmployeeMaps();
-        });
+        if (this.props.type === 'emp') {
+            this.setState({
+                empid: this.props.user.id,
+                user: this.props.user,
+            }, () => {
+                this._getEmployeeMaps();
+            });
+        } else {
+            const empid = this.props.navigation.getParam('id', null);
+            const user = this.props.navigation.getParam('user', null);
+            this.setState({
+                empid,
+                user
+            }, () => {
+                this._getEmployeeMaps();
+            });
+        }
     }
 
     _getEmployeeMaps = () => {
@@ -60,7 +70,7 @@ class History extends Component {
         return (
             <View style={styles.container}>
                 <HeaderComponent
-                    goBack={this.props.navigation.goBack}
+                    openDrawer={this.props.navigation.openDrawer}
                     title={`${this.state.user ? "History: " + this.state.user.name : "History"}`} />
 
                 <Content>
@@ -78,4 +88,8 @@ const styles = StyleSheet.create({
     },
 });
 
-export default History
+const mapStateToProps = state => ({
+    user: state.UserReducer.user
+});
+
+export default connect(mapStateToProps)(History);

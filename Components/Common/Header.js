@@ -19,7 +19,14 @@ class HeaderComponent extends Component {
                     <Icon name='arrow-back' style={{ color: '#000' }} />
                 </Button>
             );
-        } else {
+        } else if (this.props.openDrawer) {
+            return (
+                <Button onPress={() => this.props.openDrawer()} transparent>
+                    <Icon name='menu' style={{ color: '#000' }} />
+                </Button>
+            );
+        }
+        else {
             return (
                 <Image style={styles.icon} source={Logo} />
             );
