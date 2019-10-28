@@ -16,33 +16,34 @@ class Home extends Component {
 
     state = {
         confirmOfflineModal: false,
+        confirmOnlineModal: false,
     }
 
-    processStatusChange = status => {
+    processStatusChange = (status) => {
 
         if (status === 'Active') {
-            // Set new map session 
-            // go online
-            firebase.database().ref(`Employees/${this.props.user.id}`).once('value').then(snapshot => {
-                const user = snapshot.val();
-
-                const newSessionId = shortid.generate();
-                firebase.database().ref(`Employees/${this.props.user.id}`).set({
-                    ...user,
-                    currentMapSessionID: newSessionId,
-                }).then(() => {
-                    this.props.setCurrentMapSessionID(newSessionId);
-                    this._onStatusChange(status);
-                });
-
-            });
+            this.toggleConfirmOnlineModal();
         } else {
-
-            // Go Offline
             this.toggleConfirmOfflineModal();
-
         }
 
+    }
+
+    goOnline = () => {
+        // Set new map session 
+        // go online
+        firebase.database().ref(`Employees/${this.props.user.id}`).once('value').then(snapshot => {
+            const user = snapshot.val();
+
+            const newSessionId = shortid.generate();
+            firebase.database().ref(`Employees/${this.props.user.id}`).set({
+                ...user,
+                currentMapSessionID: newSessionId,
+            }).then(() => {
+                this.props.setCurrentMapSessionID(newSessionId);
+                this._onStatusChange("Active");
+            });
+        });
     }
 
     toggleConfirmOfflineModal = () => {
@@ -50,12 +51,19 @@ class Home extends Component {
             confirmOfflineModal: !this.state.confirmOfflineModal
         });
     }
+    toggleConfirmOnlineModal = () => {
+        this.setState({
+            confirmOnlineModal: !this.state.confirmOnlineModal
+        });
+    }
     _onStatusChange = (status) => {
         this.setState({
             confirmOfflineModal: false,
+            confirmOnlineModal: false,
+        }, () => {
+            this.props.changeStatus(status);
+            this.forceUpdate();
         });
-        this.props.changeStatus(status);
-        this.forceUpdate();
     }
 
     render() {
@@ -63,9 +71,11 @@ class Home extends Component {
             <View style={styles.container}>
                 <HeaderComponent title={`Welcome ${this.props.user.name}!`} />
                 <Content contentContainerStyle={{ flex: 1 }}>
-                    <EmployeeStatusBar status={this.props.user.status} />
+                    <EmployeeStatusBar
+                        toggleStatus={this.processStatusChange}
+                        status={this.props.user.status} />
 
-                    <ChangeStatus processStatusChange={this.processStatusChange} />
+                    {/* <ChangeStatus processStatusChange={this.processStatusChange} /> */}
 
                     {this.props.user.status === 'Offline' ?
                         <View style={styles.yourMapWillShow}>
@@ -81,13 +91,22 @@ class Home extends Component {
                         :
                         null
                     }
-
+                    {/* Confirm offline modal */}
                     <ConfirmationModal
                         isModalVisible={this.state.confirmOfflineModal}
                         toggleModal={this.toggleConfirmOfflineModal}
                         info="Confirm Offline"
                         approvalText="Go Offline"
                         onApprove={() => this._onStatusChange('Offline')}
+                    />
+
+                    {/* Confirm Online modal */}
+                    <ConfirmationModal
+                        isModalVisible={this.state.confirmOnlineModal}
+                        toggleModal={this.toggleConfirmOnlineModal}
+                        info="Confirm Online"
+                        approvalText="Go Online"
+                        onApprove={() => this.goOnline()}
                     />
                 </Content>
             </View>

@@ -4,6 +4,16 @@ import Modal from 'react-native-modal';
 import Colors from '../../constants/Colors';
 
 class ConfirmationModal extends Component {
+
+    _getApproveButton = () => {
+        if (this.props.approvalText && this.props.onApprove) {
+            return (<TouchableOpacity onPress={() => this.props.onApprove()}>
+                <Text style={styles.cancel}>{this.props.approvalText}</Text>
+            </TouchableOpacity>)
+        }
+        return null;
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -19,11 +29,9 @@ class ConfirmationModal extends Component {
                         </Text>
                         <View style={styles.options}>
                             <TouchableOpacity onPress={() => this.props.toggleModal()}>
-                                <Text style={styles.cancel}>Cancel</Text>
+                                <Text style={styles.cancel}>{this.props.cancelText || "Cancel"}</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => this.props.onApprove()}>
-                                <Text style={styles.cancel}>{this.props.approvalText}</Text>
-                            </TouchableOpacity>
+                            {this._getApproveButton()}
                         </View>
                     </View>
                 </Modal>

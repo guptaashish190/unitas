@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Colors from '../../constants/Colors';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+
 class EmployeeStatusBar extends Component {
 
     _getStatusColor = () => {
@@ -18,13 +20,21 @@ class EmployeeStatusBar extends Component {
         return { backgroundColor: color };
     }
 
+    _toggleStatus = () => {
+        const newStatus = this.props.status === 'Active' ? 'Offline' : 'Active';
+
+        this.props.toggleStatus(newStatus);
+    }
+
 
     render() {
         return (
-            <View style={[styles.container, this._getStatusColor()]}>
-                <Text style={styles.statusText}>Current Status: </Text>
-                <Text style={styles.status}>{this.props.status}</Text>
-            </View>
+            <TouchableOpacity onPress={() => this._toggleStatus()}>
+                <View style={[styles.container, this._getStatusColor()]}>
+                    <Text style={styles.statusText}>Current Status: </Text>
+                    <Text style={styles.status}>{this.props.status}</Text>
+                </View>
+            </TouchableOpacity>
         );
     }
 }
