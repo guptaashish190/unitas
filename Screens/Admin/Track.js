@@ -39,8 +39,8 @@ class Track extends Component {
         });
     }
     _getEmployeeLocation() {
-        const empRef = firebase.database().ref(`Employees/${this.state.empid}/${this.state.user.currentMapSessionIndex}`);
-        const empLocRef = firebase.database().ref(`emp_locations/${this.state.empid}/${this.state.user.currentMapSessionIndex}`);
+        const empRef = firebase.database().ref(`Employees/${this.state.empid}/${this.state.user.currentMapSessionID}`);
+        const empLocRef = firebase.database().ref(`emp_locations/${this.state.empid}/${this.state.user.currentMapSessionID}`);
 
         this.empRef = empRef;
         this.empLocRef = empLocRef;

@@ -76,5 +76,4 @@ module.exports = {
         }
         return '';
     }
-
 }

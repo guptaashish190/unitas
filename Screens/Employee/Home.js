@@ -6,7 +6,7 @@ import shortid from 'shortid';
 import HeaderComponent from '../../Components/Common/Header';
 import EmployeeStatusBar from '../../Components/Employee/EmployeeStatusBar';
 import ChangeStatus from '../../Components/Employee/ChangeStatus';
-import { StatusChange, setCurrentMapSessionIndex } from '../../Actions/UserActions';
+import { StatusChange, setCurrentMapSessionID } from '../../Actions/UserActions';
 import EmployeeMap from '../../Components/Employee/EmployeeMap';
 import Colors from '../../constants/Colors';
 import { Content, Button } from 'native-base';
@@ -22,9 +22,9 @@ class Home extends Component {
                 const newSessionId = shortid.generate();
                 firebase.database().ref(`Employees/${this.props.user.id}`).set({
                     ...user,
-                    currentMapSessionIndex: newSessionId,
+                    currentMapSessionID: newSessionId,
                 }).then(() => {
-                    this.props.setCurrentMapSessionIndex(newSessionId);
+                    this.props.setCurrentMapSessionID(newSessionId);
                     this.props.changeStatus(status);
                     this.forceUpdate();
                 });
@@ -99,6 +99,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     changeStatus: status => dispatch(StatusChange(status)),
-    setCurrentMapSessionIndex: index => dispatch(setCurrentMapSessionIndex(index)),
+    setCurrentMapSessionID: mapSessionId => dispatch(setCurrentMapSessionID(mapSessionId)),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

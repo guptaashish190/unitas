@@ -51,12 +51,11 @@ class EmployeeMap extends Component {
             accuracy: Location.Accuracy.Balanced,
         });
 
-        const empLocRef = firebase.database().ref(`emp_locations/${this.props.user.id}/${this.props.user.currentMapSessionIndex}`)
+        const empLocRef = firebase.database().ref(`emp_locations/${this.props.user.id}/${this.props.user.currentMapSessionID}`)
         this.empLocRef = empLocRef;
 
         empLocRef.on('value', (snapshot) => {
             const emp_loc = snapshot.val();
-            console.log("location hai:", emp_loc);
             if (emp_loc) {
                 this.setState({
                     showMap: true,

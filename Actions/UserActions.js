@@ -1,4 +1,4 @@
-import { STATUS_CHANGE, TOGGLE_ENABLE_LOCATION_MODAL_VISIBLE, SET_LOCATION, SET_CURRENT_USER_MAP_SESSION_INDEX } from "./Types/UserTypes";
+import { STATUS_CHANGE, TOGGLE_ENABLE_LOCATION_MODAL_VISIBLE, SET_LOCATION, SET_CURRENT_USER_MAP_SESSION_ID } from "./Types/UserTypes";
 
 export function StatusChange(status) {
     return {
@@ -17,9 +17,9 @@ export function SetLocation(location) {
         payload: location
     }
 }
-export function setCurrentMapSessionIndex(i) {
+export function setCurrentMapSessionID(i) {
     return {
-        type: SET_CURRENT_USER_MAP_SESSION_INDEX,
+        type: SET_CURRENT_USER_MAP_SESSION_ID,
         payload: i
     }
 }
