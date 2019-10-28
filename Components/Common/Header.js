@@ -16,7 +16,7 @@ class HeaderComponent extends Component {
         if (this.props.goBack) {
             return (
                 <Button onPress={() => this.props.goBack()} transparent>
-                    <Icon name='arrow-back' />
+                    <Icon name='arrow-back' style={{ color: '#000' }} />
                 </Button>
             );
         } else {

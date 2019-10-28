@@ -59,7 +59,9 @@ class History extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <HeaderComponent title={`${this.state.user ? "History: " + this.state.user.name : "History"}`} />
+                <HeaderComponent
+                    goBack={this.props.navigation.goBack}
+                    title={`${this.state.user ? "History: " + this.state.user.name : "History"}`} />
 
                 <Content>
                     {this._getMaps()}
