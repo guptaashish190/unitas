@@ -38,6 +38,9 @@ class EmployeeCard extends Component {
             this.props.navigation.navigate('Track', { id: this.props.id, user: this.props.data });
         }
     }
+    _goToHistoryScreen = () => {
+        this.props.navigation.navigate('History', { id: this.props.id, user: this.props.data });
+    }
 
     render() {
         return (
@@ -53,7 +56,7 @@ class EmployeeCard extends Component {
                         <Button onPress={() => this._goToTrackScreen()} style={[styles.button, styles.viewButton]}>
                             <Text>View</Text>
                         </Button>
-                        <Button style={[styles.button, styles.viewButton]}>
+                        <Button onPress={() => this._goToHistoryScreen()} style={[styles.button, styles.viewButton]}>
                             <Text>History</Text>
                         </Button>
                     </View>

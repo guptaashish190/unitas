@@ -5,6 +5,8 @@ import { Spinner } from 'native-base';
 import firebase from 'firebase';
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
+
+import Utils from '../../utils';
 import Colors from '../../constants/Colors';
 
 import { TASK_NAME } from '../../constants/BackgroundTasksConstants';
@@ -105,20 +107,13 @@ class EmployeeMap extends Component {
         return null;
     }
 
-    _getDistanceString = () => {
-        if (this.state.distanceTravelled > 1000) {
-            return `Distance Travelled: ${(this.state.distanceTravelled / 1000).toFixed(2)} Km`
-        }
-        return `Distance Travelled: ${Math.round(this.state.distanceTravelled)} m`
-    }
-
     render() {
         return (
             <View style={styles.container}>
                 {this._getMap()}
 
                 {this.state.showMap ? <View style={styles.detailContainer}>
-                    <Text style={styles.distance}>{this._getDistanceString()}</Text>
+                    <Text style={styles.distance}>Distance Travelled: {Utils.getDistanceString(this.state.distanceTravelled)}</Text>
                 </View> : null}
 
             </View>

@@ -6,6 +6,7 @@ import HeaderComponent from '../../Components/Common/Header';
 import { Toast, Spinner, Content } from 'native-base';
 
 import Colors from '../../constants/Colors';
+import Utils from '../../utils';
 
 const FLAG = require('../../assets/images/green_flag.png');
 
@@ -29,7 +30,6 @@ class Track extends Component {
 
         const empid = this.props.navigation.getParam('id', null);
         const user = this.props.navigation.getParam('user', null);
-        console.log(user);
         this.setState({
             empid,
             user
@@ -112,13 +112,6 @@ class Track extends Component {
         return null;
     }
 
-    _getDistanceString = () => {
-        if (this.state.distanceTravelled > 1000) {
-            return `Distance Travelled: ${(this.state.distanceTravelled / 1000).toFixed(2)} Km`
-        }
-        return `Distance Travelled: ${Math.round(this.state.distanceTravelled)} m`
-    }
-
     render() {
         return (
             <View style={styles.container}>
@@ -127,7 +120,7 @@ class Track extends Component {
                     {this._getMap()}
                     {this.state.showMap ?
                         <View style={styles.detailContainer}>
-                            <Text style={styles.distance}>{this._getDistanceString()}</Text>
+                            <Text style={styles.distance}>Distance Travelled: {Utils.getDistanceString()}</Text>
                         </View> : null}
                 </Content>
             </View>

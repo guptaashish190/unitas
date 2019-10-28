@@ -45,6 +45,7 @@ const setLocationCoordinates = (location, id, mapSessionId) => {
 
             firebase.database().ref(`emp_locations/${id}/${mapSessionId}`).set({
                 date: emp_location.date,
+                dateTo: new Date().toString(),
                 distanceTravelled,
                 coordinates: location,
                 routeCoordinates: [...emp_location.routeCoordinates, location],

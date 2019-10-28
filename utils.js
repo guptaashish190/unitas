@@ -56,6 +56,16 @@ module.exports = {
         const distance = haversine(prevLatLng, newLatLng, { unit: 'meter' }) || 0;
         return Math.round(distance);
     },
+
+    getDistanceString: (distance) => {
+        if (!distance) {
+            return '-';
+        }
+        if (distance > 1000) {
+            return `${(distance / 1000).toFixed(2)} Km`
+        }
+        return `${Math.round(distance)} m`
+    },
     // Map the address string from the address component
     getAddressStringFromLocationObject: (locationObject) => {
         if (locationObject) {
@@ -76,5 +86,16 @@ module.exports = {
             }
         }
         return '';
+    },
+    formatAMPM: (d) => {
+        const date = new Date(d);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        var strTime = hours + ':' + minutes + ' ' + ampm;
+        return strTime;
     }
 }
