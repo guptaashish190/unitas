@@ -24,7 +24,6 @@ class Home extends Component {
         this.fdb = ref;
 
         ref.on('value', (snapshot) => {
-            console.log(snapshot.val());
             this.setState({
                 empids: Object.keys(snapshot.val()),
                 employees: snapshot.val(),

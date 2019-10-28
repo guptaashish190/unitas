@@ -29,6 +29,7 @@ class Track extends Component {
 
         const empid = this.props.navigation.getParam('id', null);
         const user = this.props.navigation.getParam('user', null);
+        console.log(user);
         this.setState({
             empid,
             user
@@ -39,7 +40,7 @@ class Track extends Component {
         });
     }
     _getEmployeeLocation() {
-        const empRef = firebase.database().ref(`Employees/${this.state.empid}/${this.state.user.currentMapSessionID}`);
+        const empRef = firebase.database().ref(`Employees/${this.state.empid}`);
         const empLocRef = firebase.database().ref(`emp_locations/${this.state.empid}/${this.state.user.currentMapSessionID}`);
 
         this.empRef = empRef;
@@ -56,7 +57,7 @@ class Track extends Component {
         });
         empRef.on('value', (snapshot) => {
             const employeeDetail = snapshot.val();
-            if (employeeDetail.status === 'Offline') {
+            if (employeeDetail !== null && employeeDetail.status !== 'Active') {
                 Toast.show({
                     text: `${employeeDetail.name} is currently offline.`,
                     buttonText: 'Back',

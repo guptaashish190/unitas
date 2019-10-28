@@ -24,8 +24,12 @@ class EmployeeCard extends Component {
         });
     }
 
+    componentDidMount() {
+        console.log(this.props.data);
+    }
+
     _goToTrackScreen = () => {
-        if (this.props.data.status == 'Offline') {
+        if (this.props.data.status !== 'Active') {
             Toast.show({
                 text: `${this.props.data.name} is currently offline.`,
                 buttonText: 'Ok',

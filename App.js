@@ -1,12 +1,11 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, YellowBox } from 'react-native';
 import { AppLoading, Icon } from 'expo';
 import * as Font from 'expo-font';
 import Constants from 'expo-constants';
 import { Root } from 'native-base';
 import { Provider } from 'react-redux';
 import firebase from 'firebase';
-
 
 import store from './store';
 import Colors from './constants/Colors';
@@ -23,7 +22,7 @@ export default class App extends React.Component {
   constructor(props) {
 
     super(props);
-
+    YellowBox.ignoreWarnings(['Setting a timer']);
     // Initialize Firebase
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);

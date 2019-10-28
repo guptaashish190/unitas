@@ -29,7 +29,7 @@ class EmployeeStatusBar extends Component {
 
     render() {
         return (
-            <TouchableOpacity onPress={() => this._toggleStatus()}>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => this._toggleStatus()}>
                 <View style={[styles.container, this._getStatusColor()]}>
                     <Text style={styles.statusText}>Current Status: </Text>
                     <Text style={styles.status}>{this.props.status}</Text>
