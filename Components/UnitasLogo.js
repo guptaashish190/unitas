@@ -14,6 +14,10 @@ class UnitasLogo extends Component {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        alignSelf: 'center',
+        margin: 10,
+    },
     logo: {
         width: 200,
         height: 80,

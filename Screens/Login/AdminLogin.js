@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { StyleSheet, View, TouchableOpacity, Image } from 'react-native';
 import { Container, Text, Item, Input, Icon, Button, Toast } from 'native-base';
 import Colors from '../../constants/Colors';
@@ -8,13 +7,17 @@ import UnitasLogo from '../../Components/UnitasLogo';
 class AdminLogin extends Component {
 
     state = {
-        username: '',
+        email: '',
         password: '',
         error: '',
     }
 
+    onRegisterClick = () => {
+        this.props.navigation.navigate('RegisterAdmin');
+    }
+
     onLoginClick = () => {
-        if (!this.state.username.length || !this.state.password.length) {
+        if (!this.state.email.length || !this.state.password.length) {
             this.setState({
                 error: 'Fill all the fields'
             }, () => {
@@ -30,17 +33,19 @@ class AdminLogin extends Component {
     }
 
     _loginUser = () => {
-        // Firebase.auth().signInWithEmailAndPassword(this.state.username, this.state.password)
-        //   .then(() => {
-        //     this.props.navigation.navigate();
-        //   }).catch((err) => {
-        //     Toast.show({
-        //       text: err.message,
-        //       duration: 3000,
-        //       type: 'danger'
-        //     });
-        //   });
-        this.props.navigation.navigate("Admin");
+        const user = {
+            name: 'Ashish Gupta',
+            status: 'Offline',
+            id: '2ozBcyRGLOZjOR73g6FHhpIYLuz2',
+            photo: "http://keenthemes.com/preview/metronic/theme/as...",
+        }
+        this.props.navigation.navigate("Loading", {
+            credentials: {
+                email: this.state.email,
+                password: this.state.password,
+            },
+            type: 'admin'
+        });
     }
 
     isError = type => {
@@ -60,14 +65,14 @@ class AdminLogin extends Component {
                 <View style={styles.boxContainer}>
                     <View style={styles.box}>
                         <Text style={styles.title}>Admin</Text>
-                        <Item style={styles.textBox} error={this.isError('username')} rounded>
+                        <Item style={styles.textBox} error={this.isError('email')} rounded>
                             <Icon name="person" style={{ color: Colors.tintColor }} />
                             <Input
                                 style={{ padding: 10 }}
-                                placeholder="Username"
-                                onChangeText={text => this.setState({ username: text, error: this.state.error.replace('username', '') })}
-                                value={this.state.username} />
-                            {this.isError('username') ? <Icon name="close-circle" style={{ color: 'red' }} /> : null}
+                                placeholder="Email"
+                                onChangeText={text => this.setState({ email: text, error: this.state.error.replace('email', '') })}
+                                value={this.state.email} />
+                            {this.isError('email') ? <Icon name="close-circle" style={{ color: 'red' }} /> : null}
                         </Item>
                         <Item style={styles.textBox} error={this.isError('password')} rounded>
                             <Icon name="lock" style={{ color: Colors.tintColor }} />
@@ -82,6 +87,10 @@ class AdminLogin extends Component {
                         </Item>
                         <View>
                             <Button onPress={() => this.onLoginClick()} style={styles.loginButton}><Text style={styles.loginText}>Login</Text></Button>
+                        </View>
+
+                        <View>
+                            <Button onPress={() => this.onRegisterClick()} style={styles.registerButton}><Text style={styles.registerText}>Register</Text></Button>
                         </View>
                     </View>
                 </View>
@@ -153,8 +162,15 @@ const styles = StyleSheet.create({
         marginTop: 20,
         opacity: 0.7,
         flexDirection: 'row',
+    },
+    registerButton: {
+        backgroundColor: 'white',
+        marginTop: 20,
+
+    },
+    registerText: {
+        color: 'black',
     }
 });
-
 
 export default AdminLogin;

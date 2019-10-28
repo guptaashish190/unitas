@@ -1,18 +1,15 @@
 import React from 'react';
-import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
-import ChooseType from '../Screens/Login/ChooseType';
-import AdminLogin from '../Screens/Login/AdminLogin';
-import EmployeeLogin from '../Screens/Login/EmployeeLogin';
-import AdminNavigator from './AdminNavigator.js';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import LoginNavigator from './LoginNavigator';
+import Loading from '../Screens/Common/Loading';
 import EmployeeNavigator from './EmployeeNavigator';
+import AdminNavigator from './AdminNavigator';
 
-export default createAppContainer(createStackNavigator({
+export default createAppContainer(createSwitchNavigator({
+    LoginNavigator,
     Employee: EmployeeNavigator,
     Admin: AdminNavigator,
-    ChooseType,
-    AdminLogin,
-    EmployeeLogin,
+    Loading
 }, {
     defaultNavigationOptions: {
         header: null

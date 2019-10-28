@@ -77,8 +77,6 @@ class Home extends Component {
                         toggleStatus={this.processStatusChange}
                         status={this.props.user.status} />
 
-                    {/* <ChangeStatus processStatusChange={this.processStatusChange} /> */}
-
                     {this.props.user.status === 'Offline' ?
                         <View style={styles.yourMapWillShow}>
                             <Text style={styles.yourMapWillShowText}>Your map will show up here!</Text>
