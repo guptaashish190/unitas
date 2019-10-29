@@ -7,8 +7,8 @@ import UnitasLogo from '../../Components/UnitasLogo';
 class AdminLogin extends Component {
 
     state = {
-        email: '',
-        password: '',
+        email: 'guptaashish190@gmail.com',
+        password: 'password',
         error: '',
     }
 
@@ -33,12 +33,6 @@ class AdminLogin extends Component {
     }
 
     _loginUser = () => {
-        const user = {
-            name: 'Ashish Gupta',
-            status: 'Offline',
-            id: '2ozBcyRGLOZjOR73g6FHhpIYLuz2',
-            photo: "http://keenthemes.com/preview/metronic/theme/as...",
-        }
         this.props.navigation.navigate("Loading", {
             credentials: {
                 email: this.state.email,

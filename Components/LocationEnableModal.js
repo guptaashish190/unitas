@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Platform, Linking } from 'react-native';
 import Modal from 'react-native-modal';
 import { connect } from 'react-redux';
-import { IntentLauncherAndroid } from 'expo';
+import * as IntentLauncher from 'expo-intent-launcher';
 
 import Colors from '../constants/Colors';
 import { ToggleEnableLocationModal } from '../Actions/UserActions';
@@ -14,8 +14,8 @@ class LocationEnableModal extends Component {
         if (Platform.OS == 'ios') {
             Linking.openURL('app-settings:');
         } else {
-            IntentLauncherAndroid.startActivityAsync(
-                IntentLauncherAndroid.ACTION_LOCATION_SOURCE_SETTINGS
+            IntentLauncher.startActivityAsync(
+                IntentLauncher.ACTION_LOCATION_SOURCE_SETTINGS
             );
         }
     };

@@ -13,7 +13,8 @@ class History extends Component {
         empid: null,
         user: null,
         maps: null,
-        mapIds: null
+        mapIds: null,
+        error: null
     }
 
 
@@ -42,11 +43,16 @@ class History extends Component {
         if (this.state.empid) {
             firebase.database().ref(`emp_locations/${this.state.empid}`).once('value').then((snapshot) => {
                 const locations = snapshot.val();
-
-                this.setState({
-                    maps: locations,
-                    mapIds: Object.keys(locations),
-                });
+                if (locations) {
+                    this.setState({
+                        maps: locations,
+                        mapIds: Object.keys(locations),
+                    });
+                } else {
+                    this.setState({
+                        error: 'No Locations'
+                    });
+                }
 
             });
         }
@@ -63,18 +69,22 @@ class History extends Component {
                 />
             })
         }
-        return <Spinner />;
+        if (!this.state.error) {
+            return <Spinner />;
+        }
     }
 
     render() {
         return (
             <View style={styles.container}>
                 <HeaderComponent
+                    goBack={this.props.navigation.goBack}
                     openDrawer={this.props.navigation.openDrawer}
                     title={`${this.state.user ? "History: " + this.state.user.name : "History"}`} />
 
                 <Content>
                     {this._getMaps()}
+                    <Text style={styles.errorText}>{this.state.error}</Text>
                 </Content>
             </View>
         );
@@ -86,6 +96,13 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "white",
     },
+    errorText: {
+        margin: 20,
+        fontSize: 17,
+        alignSelf: 'center',
+        fontWeight: 'bold',
+        color: '#aaa'
+    }
 });
 
 const mapStateToProps = state => ({

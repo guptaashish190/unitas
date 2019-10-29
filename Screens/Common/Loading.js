@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
-import { SetUser } from '../../Actions/UserActions';
+import { SetUser, SetType } from '../../Actions/UserActions';
 import { Toast } from 'native-base';
 
 class Loading extends Component {
@@ -10,41 +10,40 @@ class Loading extends Component {
     componentDidMount() {
         const credentials = this.props.navigation.getParam('credentials', null);
         const type = this.props.navigation.getParam('type', null);
-        console.log(credentials, type);
+        console.log("Got Crentials");
         if (credentials) {
             const { email } = credentials;
             const { password } = credentials;
 
             firebase.auth().signInWithEmailAndPassword(email, password)
                 .then(({ user }) => {
-                    firebase.auth().onAuthStateChanged(() => {
 
-                        let firebaseref = null;
-                        let navigate = null;
-                        if (type === 'admin') {
-                            firebase.database().ref(`Admins/${user.uid}`);
-                            navigate = this.props.navigation.navigate('Admin');
-                        } else if (type === 'emp') {
-                            firebase.database().ref(`Employees/${user.uid}`);
-                            navigate = this.props.navigation.navigate('Employee');
+                    let firebaseref = null;
+                    if (type === 'admin') {
+                        firebaseref = firebase.database().ref(`Admins/${user.uid}`);
+                    } else if (type === 'emp') {
+                        firebaseref = firebase.database().ref(`Employees/${user.uid}`);
+                    } else {
+                        this._goBack(null, type);
+                        return;
+                    }
+                    if (!firebaseref) {
+                        this._goBack("No firebase ref", type);
+                        return;
+                    }
+                    firebaseref.once('value').then(snapshot => {
+                        const userData = snapshot.val();
+                        if (userData) {
+                            this.props.setUser(userData);
+                            this.props.setType(type);
+                            console.log("Navigating " + type);
+                            this.props.navigation.navigate(type === 'admin' ? 'Admin' : 'Employee');
                         } else {
-                            this._goBack(null, type);
-                            return;
+                            console.log('Null User');
+                            this._goBack("Error: User Data -> null", type);
                         }
-                        if (firebaseref) {
-                            this._goBack(null, type);
-                            return;
-                        }
-                        firebaseref.once('value').then(snapshot => {
-                            const userData = snapshot.val();
-                            if (userData) {
-                                this.props.setUser(userData);
-                                this.props.setType(type);
-                                navigate();
-                            } else {
-                                this._goBack(null, type);
-                            }
-                        });
+                    }).catch(err => {
+                        this._goBack(err.message, type);
                     });
                 }).catch((err) => {
                     this._goBack(err.message, type);
@@ -89,6 +88,7 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => ({
     setUser: user => dispatch(SetUser(user)),
+    setType: type => dispatch(SetType(type)),
 });
 
 export default connect(null, mapDispatchToProps)(Loading);

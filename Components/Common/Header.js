@@ -6,7 +6,7 @@ import Colors from '../../constants/Colors';
 import Logo from '../../assets/images/icon.png';
 // Adaptive Header component
 // Adds back button if goBack prop is passed else
-// heb alles logo will be displayed
+// logo will be displayed
 // Adds next button is next prop is passed
 
 class HeaderComponent extends Component {
@@ -31,6 +31,17 @@ class HeaderComponent extends Component {
                 <Image style={styles.icon} source={Logo} />
             );
         }
+    }
+    _getRightFunc = () => {
+        if (this.props.rightText && this.props.rightFunc) {
+            return (
+                <TouchableOpacity onPress={() => this.props.rightFunc()}>
+                    <Text style={styles.rightTextFunc}>{this.props.rightText}</Text>
+                </TouchableOpacity>
+            )
+
+        }
+
     }
 
     _getBody = () => {
@@ -72,6 +83,7 @@ class HeaderComponent extends Component {
                 {this._getLeft()}
                 {this._getBody()}
                 {this._getRight()}
+                {this._getRightFunc()}
             </Header>
         );
     }
@@ -119,6 +131,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginRight: 10,
         alignItems: 'center',
+    },
+    rightTextFunc: {
+        fontWeight: 'bold',
+        color: '#ff1f1f'
     }
 });
 

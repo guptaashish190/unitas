@@ -9,8 +9,8 @@ import { SetUser } from '../../Actions/UserActions';
 class EmployeeLogin extends Component {
 
     state = {
-        email: '',
-        password: '',
+        email: 'guptaashish1901@gmail.com',
+        password: 'password',
         error: '',
     }
 

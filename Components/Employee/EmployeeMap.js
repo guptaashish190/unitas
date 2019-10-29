@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, AsyncStorage } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
-import { Spinner } from 'native-base';
+import { Spinner, Toast } from 'native-base';
 import firebase from 'firebase';
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
@@ -32,20 +32,6 @@ class EmployeeMap extends Component {
     }
 
     async componentDidMount() {
-        // Utils.getLocation().then((location) => {
-        //     console.log(location);
-        //     this.setState({
-        //         showMap: true,
-        //         coordinate: location
-        //     }, () => {
-        //     });
-        // }).catch((err) => {
-        //     console.log(err);
-        //     Toast.show({
-        //         text: 'Couldn\'t set the location',
-        //         type: 'danger'
-        //     });
-        // });
         await AsyncStorage.setItem('currentUser', JSON.stringify(this.props.user));
 
         console.log("starting loc services");

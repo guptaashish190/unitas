@@ -10,8 +10,8 @@ import MapScreen from '../Screens/Common/MapScreen';
 export default createAppContainer(createStackNavigator({
     AdminHome,
     History,
-    Track: Track,
-    MapScreen
+    Track,
+    MapScreen,
 }, {
     defaultNavigationOptions: {
         header: null

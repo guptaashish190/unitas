@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
+import { Toast } from 'native-base';
 import shortid from 'shortid';
+
+import Utils from '../../utils';
 import HeaderComponent from '../../Components/Common/Header';
 import EmployeeStatusBar from '../../Components/Employee/EmployeeStatusBar';
-import ChangeStatus from '../../Components/Employee/ChangeStatus';
 import { StatusChange, setCurrentMapSessionID } from '../../Actions/UserActions';
 import EmployeeMap from '../../Components/Employee/EmployeeMap';
 import Colors from '../../constants/Colors';
@@ -18,15 +20,23 @@ class Home extends Component {
         confirmOfflineModal: false,
         confirmOnlineModal: false,
     }
-
     processStatusChange = (status) => {
 
         if (status === 'Active') {
-            this.toggleConfirmOnlineModal();
+            // Check is location is enabled and accessible or not
+            // if not dont go online
+            Utils.getLocation().then(() => {
+                this.toggleConfirmOnlineModal();
+            }).catch((err) => {
+                console.log(err);
+                Toast.show({
+                    text: 'Couldn\'t set the location',
+                    type: 'danger',
+                });
+            });
         } else {
             this.toggleConfirmOfflineModal();
         }
-
     }
 
     goOnline = () => {
@@ -65,11 +75,21 @@ class Home extends Component {
             this.forceUpdate();
         });
     }
+    _signOut = () => {
+        this._onStatusChange('Offline');
+
+        console.log("Signing out");
+        firebase.auth().signOut().then(() => {
+            this.props.navigation.navigate('ChooseType');
+        });
+    }
 
     render() {
         return (
             <View style={styles.container}>
                 <HeaderComponent
+                    rightText="Sign Out"
+                    rightFunc={this._signOut}
                     openDrawer={this.props.navigation.openDrawer}
                     title={`Welcome ${this.props.user.name}!`} />
                 <Content contentContainerStyle={{ flex: 1 }}>
@@ -82,7 +102,9 @@ class Home extends Component {
                             <Text style={styles.yourMapWillShowText}>Your map will show up here!</Text>
                         </View>
                         :
-                        <EmployeeMap user={this.props.user} location={this.props.location} />
+                        <EmployeeMap
+                            user={this.props.user}
+                            location={this.props.location} />
                     }
                     {this.props.user.status === 'Active' ?
                         <Button danger style={styles.goOffline} onPress={() => this.processStatusChange('Offline')}>

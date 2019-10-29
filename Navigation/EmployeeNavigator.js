@@ -22,7 +22,7 @@ export default createAppContainer(createDrawerNavigator({
             History: {
                 screen: props => <History {...props} type="emp" />
             },
-            EmpMapScreen: MapScreen
+            MapScreen
         },
             {
                 defaultNavigationOptions: {

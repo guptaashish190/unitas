@@ -6,9 +6,9 @@ import EmployeeNavigator from './EmployeeNavigator';
 import AdminNavigator from './AdminNavigator';
 
 export default createAppContainer(createSwitchNavigator({
+    Admin: AdminNavigator,
     LoginNavigator,
     Employee: EmployeeNavigator,
-    Admin: AdminNavigator,
     Loading
 }, {
     defaultNavigationOptions: {

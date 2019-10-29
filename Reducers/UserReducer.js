@@ -1,4 +1,4 @@
-import { STATUS_CHANGE, TOGGLE_ENABLE_LOCATION_MODAL_VISIBLE, SET_LOCATION, SET_CURRENT_USER_MAP_SESSION_ID } from "../Actions/Types/UserTypes";
+import { STATUS_CHANGE, TOGGLE_ENABLE_LOCATION_MODAL_VISIBLE, SET_LOCATION, SET_CURRENT_USER_MAP_SESSION_ID, SET_TYPE } from "../Actions/Types/UserTypes";
 
 // Initial State
 const INITIAL_STATE = {
@@ -8,6 +8,7 @@ const INITIAL_STATE = {
         id: '2ozBcyRGLOZjOR73g6FHhpIYLuz2',
         photo: "http://keenthemes.com/preview/metronic/theme/as...",
     },
+    type: null,
     location: null,
     isEnableLocationModalVisible: false,
     currentMapSessionID: 'axnsuna'
@@ -25,6 +26,8 @@ const UserReducer = (state = INITIAL_STATE, action) => {
             return { ...state, location: action.payload }
         case SET_CURRENT_USER_MAP_SESSION_ID:
             return { ...state, user: { ...state.user, currentMapSessionID: action.payload } }
+        case SET_TYPE:
+            return { ...state, type: action.payload }
         default:
             return state;
     }

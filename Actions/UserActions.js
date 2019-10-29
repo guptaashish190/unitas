@@ -1,4 +1,4 @@
-import { STATUS_CHANGE, TOGGLE_ENABLE_LOCATION_MODAL_VISIBLE, SET_LOCATION, SET_CURRENT_USER_MAP_SESSION_ID, SET_USER } from "./Types/UserTypes";
+import { STATUS_CHANGE, TOGGLE_ENABLE_LOCATION_MODAL_VISIBLE, SET_LOCATION, SET_CURRENT_USER_MAP_SESSION_ID, SET_USER, SET_TYPE } from "./Types/UserTypes";
 
 export function StatusChange(status) {
     return {
@@ -27,5 +27,12 @@ export function SetUser(user) {
     return {
         type: SET_USER,
         payload: user
+    }
+}
+
+export function SetType(type) {
+    return {
+        type: SET_TYPE,
+        payload: type
     }
 }

@@ -51,7 +51,7 @@ class RegisterAdmin extends Component {
                 duration: 3000,
             });
 
-        } else if (this.state.passcode === config.adminPassCode) {
+        } else if (this.state.passcode !== config.empPassCode) {
             Toast.show({
                 text: "Employee Passcode is invalid",
                 type: 'danger',

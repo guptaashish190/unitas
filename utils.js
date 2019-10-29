@@ -22,7 +22,6 @@ module.exports = {
                             // get location .. and set state
                             console.log("enable");
                             Location.getCurrentPositionAsync({}).then(location => {
-
                                 console.log("loc");
                                 const loc = {
                                     latitude: location.coords.latitude,

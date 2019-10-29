@@ -46,10 +46,20 @@ class Home extends Component {
         });
     }
 
+    _signOut = () => {
+        console.log("Signing out");
+        firebase.auth().signOut().then(() => {
+            this.props.navigation.navigate('ChooseType');
+        });
+    }
+
     render() {
         return (
             <View style={styles.container}>
-                <HeaderComponent title="Employee Status" />
+                <HeaderComponent
+                    rightText="Sign Out"
+                    rightFunc={this._signOut}
+                    title="Employee Status" />
                 <ScrollView>
                     {this._getEmployeeCards()}
                 </ScrollView>
