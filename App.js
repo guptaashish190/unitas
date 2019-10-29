@@ -3,10 +3,12 @@ import { Platform, StatusBar, StyleSheet, View, YellowBox } from 'react-native';
 import { AppLoading, Icon } from 'expo';
 import * as Font from 'expo-font';
 import Constants from 'expo-constants';
+import Geocoder from 'react-native-geocoding';
 import { Root } from 'native-base';
 import { Provider } from 'react-redux';
 import firebase from 'firebase';
 
+import config from './config';
 import store from './store';
 import Colors from './constants/Colors';
 import MainNavigator from './Navigation/MainNavigator';
@@ -24,6 +26,8 @@ export default class App extends React.Component {
     super(props);
     YellowBox.ignoreWarnings(['Setting a timer']);
     // Initialize Firebase
+    console.log("initializing app");
+    Geocoder.init(config.googlePlacesApiKey);
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }

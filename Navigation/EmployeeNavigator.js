@@ -6,9 +6,18 @@ import Home from '../Screens/Employee/Home';
 import History from '../Screens/Common/History';
 import MapScreen from '../Screens/Common/MapScreen';
 import { Icon } from 'native-base';
+import Settings from '../Screens/Employee/Settings';
 
 
 export default createAppContainer(createDrawerNavigator({
+
+    Settings: {
+        screen: Settings,
+        navigationOptions: {
+            drawerLabel: 'Settings',
+            drawerIcon: () => <Icon fontSize={17} name="settings" type='MaterialCommunityIcons' />
+        }
+    },
     EmployeeHome: {
 
         screen: Home,

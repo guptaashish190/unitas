@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import HeaderComponent from '../../Components/Common/Header';
-import MapView, { Marker, Polyline } from 'react-native-maps';
+import MapView, { Marker, Polyline, Callout } from 'react-native-maps';
 import { Spinner, Content } from 'native-base';
 
 import Utils from '../../utils';
@@ -16,7 +16,9 @@ class MapScreen extends Component {
 
     state = {
         map: null,
-        mapId: null
+        mapId: null,
+        locationName: null,
+        loadingLocationName: false
     }
 
     componentDidMount() {
@@ -46,6 +48,33 @@ class MapScreen extends Component {
         }, 1000);
 
     }
+
+    _setLocationName = location => {
+        this.setState({
+            loadingLocationName: true,
+        }, () => {
+            Utils.reverseGeocode(location).then(ln => {
+                console.log(ln);
+                const address = ln.map(l => l.long_name).join(', ');
+                console.log(address);
+                this.setState({
+                    locationName: address,
+                    loadingLocationName: false
+                });
+            });
+        });
+    }
+
+    _getCallout = () => {
+        return (
+            <Callout style={styles.callout}>
+                {this.state.loadingLocationName || !this.state.locationName
+                    ? <Text>Loading...</Text>
+                    : <Text>{this.state.locationName}</Text>
+                }
+            </Callout>
+        )
+    }
     _getMap = () => {
         if (this.state.map) {
 
@@ -59,16 +88,21 @@ class MapScreen extends Component {
                 region={this.getMapRegion()}
             >
                 <Marker
+                    onPress={() => this._setLocationName(this.state.map.routeCoordinates[this.state.map.routeCoordinates.length - 1])}
                     coordinate={this.state.map.routeCoordinates[this.state.map.routeCoordinates.length - 1]}
                 >
                     <Image source={FINISH_MARKER_IMAGE} style={styles.startMarker} />
+                    {this._getCallout()}
                 </Marker>
+
                 <Polyline coordinates={this.state.map.routeCoordinates} strokeWidth={5} strokeColor={Colors.tintColor} />
 
                 <Marker
+                    onPress={() => this._setLocationName(this.state.map.routeCoordinates[0])}
                     coordinate={this.state.map.routeCoordinates[0]}
                 >
                     <Image source={START_MARKER_IMAGE} style={styles.startMarker} />
+                    {this._getCallout()}
                 </Marker>
 
             </MapView>)
@@ -116,6 +150,9 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
     },
+    callout: {
+        width: 200,
+    }
 });
 
 export default MapScreen

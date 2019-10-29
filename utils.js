@@ -3,6 +3,7 @@ import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import { Toast } from 'native-base';
 import haversine from 'haversine';
+import Geocoder from 'react-native-geocoding';
 
 import store from './store';
 import { ToggleEnableLocationModal, SetLocation } from './Actions/UserActions';
@@ -54,6 +55,13 @@ module.exports = {
     calcDistance: (prevLatLng, newLatLng) => {
         const distance = haversine(prevLatLng, newLatLng, { unit: 'meter' }) || 0;
         return Math.round(distance);
+    },
+    reverseGeocode: async (latlng) => {
+        const json = await Geocoder.from(latlng);
+
+        var location = json.results[0].address_components;
+        console.log("location", location);
+        return location;
     },
 
     getDistanceString: (distance) => {

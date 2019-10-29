@@ -13,16 +13,16 @@ class HeaderComponent extends Component {
 
     // left side of navbar
     _getLeft = () => {
-        if (this.props.goBack) {
-            return (
-                <Button onPress={() => this.props.goBack()} transparent>
-                    <Icon name='arrow-back' style={{ color: '#000' }} />
-                </Button>
-            );
-        } else if (this.props.openDrawer) {
+        if (this.props.openDrawer) {
             return (
                 <Button onPress={() => this.props.openDrawer()} transparent>
                     <Icon name='menu' style={{ color: '#000' }} />
+                </Button>
+            );
+        } else if (this.props.goBack) {
+            return (
+                <Button onPress={() => this.props.goBack()} transparent>
+                    <Icon name='arrow-back' style={{ color: '#000' }} />
                 </Button>
             );
         }
