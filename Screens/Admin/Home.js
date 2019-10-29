@@ -3,10 +3,13 @@ import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import shortid from 'shortid';
 import firebase from 'firebase';
 import { Spinner } from 'native-base';
+import { connect } from 'react-redux';
+
 // import { employees } from '../../Data/Employees';
 import HeaderComponent from '../../Components/Common/Header';
 import EmployeeCard from '../../Components/Admin/EmployeeCard';
 import Colors from '../../constants/Colors';
+import { SetUser } from '../../Actions/UserActions';
 
 class Home extends Component {
 
@@ -49,6 +52,7 @@ class Home extends Component {
     _signOut = () => {
         console.log("Signing out");
         firebase.auth().signOut().then(() => {
+            this.props.setUser(null);
             this.props.navigation.navigate('ChooseType');
         });
     }
@@ -75,4 +79,8 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Home
+const mapDispatchToProps = dispatch => ({
+    setUser: user => dispatch(SetUser(user)),
+});
+
+export default connect(null, mapDispatchToProps)(Home);

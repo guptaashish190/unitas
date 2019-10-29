@@ -11,6 +11,7 @@
   "dependencies": {
     "@expo/vector-icons": "^10.0.0",
     "@firebase/firestore": "^1.6.3",
+    "@react-native-community/async-storage": "^1.6.2",
     "expo": "^35.0.0",
     "expo-background-fetch": "^7.0.0",
     "expo-constants": "~7.0.0",
@@ -40,6 +41,8 @@
     "react-navigation-stack": "^1.10.3",
     "react-redux": "^7.1.1",
     "redux": "^4.0.4",
+    "redux-persist": "^6.0.0",
+    "redux-persist-expo-securestore": "^2.0.0",
     "shortid": "^2.2.15",
     "uuid": "^3.3.3"
   },

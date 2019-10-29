@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
-import { Toast } from 'native-base';
+import { Toast, Spinner } from 'native-base';
 import shortid from 'shortid';
 
 import Utils from '../../utils';
 import HeaderComponent from '../../Components/Common/Header';
 import EmployeeStatusBar from '../../Components/Employee/EmployeeStatusBar';
-import { StatusChange, setCurrentMapSessionID } from '../../Actions/UserActions';
+import { StatusChange, setCurrentMapSessionID, SetUser } from '../../Actions/UserActions';
 import EmployeeMap from '../../Components/Employee/EmployeeMap';
 import Colors from '../../constants/Colors';
 import { Content, Button } from 'native-base';
@@ -18,6 +18,7 @@ class Home extends Component {
 
     state = {
         confirmOfflineModal: false,
+        loading: false,
         confirmOnlineModal: false,
     }
     processStatusChange = (status) => {
@@ -25,13 +26,23 @@ class Home extends Component {
         if (status === 'Active') {
             // Check is location is enabled and accessible or not
             // if not dont go online
-            Utils.getLocation().then(() => {
-                this.toggleConfirmOnlineModal();
-            }).catch((err) => {
-                console.log(err);
-                Toast.show({
-                    text: 'Couldn\'t set the location',
-                    type: 'danger',
+            this.setState({
+                loading: true,
+            }, () => {
+
+                Utils.getLocation().then(() => {
+                    this.setState({
+                        loading: false,
+                    });
+                    this.toggleConfirmOnlineModal();
+                }).catch((err) => {
+                    this.setState({
+                        loading: false,
+                    });
+                    Toast.show({
+                        text: 'Couldn\'t set the location',
+                        type: 'danger',
+                    });
                 });
             });
         } else {
@@ -88,6 +99,7 @@ class Home extends Component {
         this._onStatusChange('Offline');
         console.log("Signing out");
         firebase.auth().signOut().then(() => {
+            this.props.setUser(null);
             this.props.navigation.navigate('ChooseType');
         });
     }
@@ -104,7 +116,7 @@ class Home extends Component {
                     <EmployeeStatusBar
                         toggleStatus={this.processStatusChange}
                         status={this.props.user.status} />
-
+                    {this.state.loading ? <Text style={styles.loading}>Loading Location...</Text> : null}
                     {this.props.user.status === 'Offline' ?
                         <View style={styles.yourMapWillShow}>
                             <Text style={styles.yourMapWillShowText}>Your map will show up here!</Text>
@@ -167,6 +179,9 @@ const styles = StyleSheet.create({
     offlineText: {
         fontWeight: 'bold',
         color: 'white'
+    },
+    loading: {
+        alignSelf: 'center',
     }
 });
 
@@ -176,6 +191,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+    setUser: user => dispatch(SetUser(user)),
     changeStatus: status => dispatch(StatusChange(status)),
     setCurrentMapSessionID: mapSessionId => dispatch(setCurrentMapSessionID(mapSessionId)),
 });
