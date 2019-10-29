@@ -4,3 +4,5 @@ export const SET_LOCATION = "SET_LOCATION";
 export const SET_CURRENT_USER_MAP_SESSION_ID = "SET_CURRENT_USER_MAP_SESSION_ID";
 export const SET_USER = "SET_USER";
 export const SET_TYPE = "SET_TYPE";
+export const SET_PHOTO = "SET_PHOTO";
+export const SET_USERNAME = "SET_USERNAME";

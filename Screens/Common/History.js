@@ -4,7 +4,7 @@ import firebase from 'firebase';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
 import HeaderComponent from '../../Components/Common/Header';
-import { Content, Spinner } from 'native-base';
+import { Content, Spinner, Toast } from 'native-base';
 import MapHistoryCard from '../../Components/Common/MapHistoryCard';
 
 class History extends Component {
@@ -14,7 +14,8 @@ class History extends Component {
         user: null,
         maps: null,
         mapIds: null,
-        error: null
+        error: null,
+        loading: false,
     }
 
 
@@ -40,25 +41,41 @@ class History extends Component {
     }
 
     _getEmployeeMaps = () => {
-        if (this.state.empid) {
-            firebase.database().ref(`emp_locations/${this.state.empid}`).once('value').then((snapshot) => {
-                const locations = snapshot.val();
-                if (locations) {
-                    this.setState({
-                        maps: locations,
-                        mapIds: Object.keys(locations),
-                    });
-                } else {
-                    this.setState({
-                        error: 'No Locations'
-                    });
-                }
+        console.log(this.state);
+        this.setState({
+            loading: true
+        }, () => {
 
-            });
-        }
+            if (this.state.empid) {
+                firebase.database().ref(`emp_locations/${this.state.empid}`).once('value').then((snapshot) => {
+                    const locations = snapshot.val();
+                    if (locations) {
+                        this.setState({
+                            maps: locations,
+                            mapIds: Object.keys(locations),
+                            loading: false,
+                        });
+                    } else {
+                        this.setState({
+                            error: 'No Locations',
+                            loading: false
+                        });
+                    }
+
+                }).catch(err => {
+                    Toast.show({
+                        text: err.message,
+                        type: 'danger'
+                    });
+                });
+            }
+        });
     }
 
     _getMaps = () => {
+        if (this.state.loading) {
+            return <Spinner />;
+        }
         if (this.state.mapIds) {
             return this.state.mapIds.map(mapId => {
                 return <MapHistoryCard
@@ -68,9 +85,6 @@ class History extends Component {
                     mapId={mapId}
                 />
             })
-        }
-        if (!this.state.error) {
-            return <Spinner />;
         }
     }
 
@@ -106,7 +120,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-    user: state.UserReducer.user
+    user: state.UserReducer.user,
 });
 
 export default connect(mapStateToProps)(History);

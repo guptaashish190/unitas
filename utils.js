@@ -22,7 +22,7 @@ module.exports = {
                             // if granted and location services enabled
                             // get location .. and set state
                             console.log("enable");
-                            Location.getCurrentPositionAsync({}).then(location => {
+                            Location.getCurrentPositionAsync({ enableHighAccuracy: true }).then(location => {
                                 console.log("loc");
                                 const loc = {
                                     latitude: location.coords.latitude,
@@ -30,6 +30,9 @@ module.exports = {
                                 }
                                 store.dispatch(SetLocation(loc));
                                 return resolve(loc);
+                            }).catch(err => {
+                                console.log("no location", err);
+                                return reject(err.message);
                             });
                         } else {
                             store.dispatch(ToggleEnableLocationModal());

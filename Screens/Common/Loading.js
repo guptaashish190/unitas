@@ -34,7 +34,10 @@ class Loading extends Component {
                     firebaseref.once('value').then(snapshot => {
                         const userData = snapshot.val();
                         if (userData) {
-                            this.props.setUser(userData);
+                            this.props.setUser({
+                                ...userData,
+                                id: user.uid
+                            });
                             this.props.setType(type);
                             console.log("Navigating " + type);
                             this.props.navigation.navigate(type === 'admin' ? 'Admin' : 'Employee');

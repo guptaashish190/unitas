@@ -2,10 +2,14 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import HeaderComponent from '../../Components/Common/Header';
 import { connect } from 'react-redux';
-import { ImagePicker } from 'expo';
-import { Content, Input, Item, Icon, Button } from 'native-base';
+import * as ImagePicker from 'expo-image-picker';
+import uuid from 'uuid/v1';
+import { Input, Item, Button, Toast, Spinner, Right } from 'native-base';
 import firebase from 'firebase';
+
 import Colors from '../../constants/Colors';
+import { SetPhoto, SetUsername } from '../../Actions/UserActions';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const DEFAULT_PROFILE_PHOTO = require('../../assets/images/default_photo.png');
 
@@ -13,62 +17,119 @@ class Settings extends Component {
 
     state = {
         username: this.props.user.name,
+        loading: false,
+        edited: false,
     }
     componentDidMount() {
         console.log(this.props.user);
     }
     async _selectPicture() {
-        const result = await ImagePicker.launchImageLibraryAsync()
+        const result = await ImagePicker.launchImageLibraryAsync({
+            aspect: [1, 1],
+            allowsEditing: true
+        })
         if (!result.cancelled) {
             await this._setImage(result.uri)
         }
     }
-
-    async _setImage(uri) {
-        this.setState({
-            loading: true
-        }, () => {
-
-        });
-    }
-
-
-    uploadImage(uri, mime = 'application/octet-stream') {
-        return new Promise((resolve, reject) => {
-            const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri
-            let uploadBlob = null
-
-            const imageRef = FirebaseClient.storage().ref('images').child('image_001')
-
-            fs.readFile(uploadUri, 'base64')
-                .then((data) => {
-                    return Blob.build(data, { type: `${mime};BASE64` })
-                })
-                .then((blob) => {
-                    uploadBlob = blob
-                    return imageRef.put(blob, { contentType: mime })
-                })
-                .then(() => {
-                    uploadBlob.close()
-                    return imageRef.getDownloadURL()
-                })
-                .then((url) => {
-                    resolve(url)
-                })
-                .catch((error) => {
-                    reject(error)
-                })
-        })
-    }
-
     /**
      * Get picture from camera
      */
     async _takePicture() {
-        const result = await ImagePicker.launchCameraAsync()
+        const result = await ImagePicker.launchCameraAsync({
+            aspect: [1, 1],
+            allowsEditing: true
+        })
         if (!result.cancelled) {
             await this._setImage(result.uri)
         }
+    }
+
+    _setImage = async (uri) => {
+        this.setState({
+            loading: true
+        }, async () => {
+            try {
+                const response = await fetch(uri);
+                const blob = await response.blob();
+                console.log("Blob Generated");
+                var ref = firebase.storage().ref().child("images/" + uuid());
+                const snapshot = await ref.put(blob);
+
+                console.log('image uploaded');
+                const url = await snapshot.ref.getDownloadURL();
+                await firebase.database().ref(`Employees/${this.props.user.id}`).update({
+                    photo: url,
+                });
+                Toast.show({
+                    text: 'Successfully Changed',
+                    type: 'success',
+                });
+                this.setState({
+                    loading: false,
+                });
+                this.props.setPhoto(url);
+            } catch (err) {
+                console.log(err.message);
+                this.setState({
+                    loading: false,
+                });
+                Toast.show({
+                    text: err.message || "Some error occured. Please try again later.",
+                    type: 'danger'
+                });
+            }
+        });
+    }
+
+
+    _updateUsername = () => {
+
+        if (this.state.username.length > 0 && !this.state.loading) {
+            this.setState({
+                loading: true,
+            }, () => {
+
+                const ref = firebase.database().ref(`Employees/${this.props.user.id}`);
+                ref.update({
+                    name: this.state.username
+                }).then(() => {
+                    Toast.show({
+                        text: "Updated",
+                        type: 'success'
+                    });
+                    this.props.setUsername(this.state.username);
+                    this.setState({
+                        loading: false,
+                        edited: false,
+                    });
+                }).catch(err => {
+                    Toast.show({
+                        text: err.message,
+                        type: 'danger'
+                    });
+                });
+            });
+        } else {
+            Toast.show({
+                text: "Username cannot be null.",
+                type: 'danger'
+            });
+        }
+    }
+    _getRight = () => {
+        if (this.state.edited) {
+            return (
+                <Right>
+                    <TouchableOpacity style={styles.updateButton} onPress={() => this._updateUsername()}>
+                        <Text style={{ color: Colors.tintColor }}>
+                            Update
+                </Text>
+                    </TouchableOpacity>
+                </Right>
+            )
+        }
+        return null;
     }
 
     render() {
@@ -82,17 +143,18 @@ class Settings extends Component {
                 <View style={styles.row}>
                     <Item rounded>
                         <Input
-                            onChangeText={text => this.setState({ username: text })}
+                            onChangeText={text => this.setState({ username: text, edited: true })}
                             value={this.state.username} placeholder='Username' />
+                        {this._getRight()}
                     </Item>
                 </View>
 
                 <Image
                     style={styles.image}
-                    source={this.props.user.photo ? ({ uri: this.props.user.photo }) : DEFAULT_PROFILE_PHOTO}
+                    source={this.props.user ? ({ uri: this.props.user.photo }) : DEFAULT_PROFILE_PHOTO}
                 />
                 <View style={styles.buttonContainer}>
-                    <Button onPress={() => this._chooseImage()} style={styles.button}>
+                    <Button onPress={() => this._selectPicture()} style={styles.button}>
                         <Text style={styles.buttonText}>
                             Choose Image
                     </Text>
@@ -103,6 +165,8 @@ class Settings extends Component {
                     </Text>
                     </Button>
                 </View>
+                {this.state.loading ? <Spinner /> : null}
+
             </View>
         );
     }
@@ -137,6 +201,9 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'center'
+    },
+    updateButton: {
+        marginRight: 10,
     }
 });
 
@@ -144,5 +211,9 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
     user: state.UserReducer.user,
 });
+const mapDispatchToProps = dispatch => ({
+    setPhoto: url => dispatch(SetPhoto(url)),
+    setUsername: name => dispatch(SetUsername(name)),
+});
 
-export default connect(mapStateToProps)(Settings);
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);

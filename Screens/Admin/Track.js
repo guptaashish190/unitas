@@ -120,7 +120,7 @@ class Track extends Component {
                     {this._getMap()}
                     {this.state.showMap ?
                         <View style={styles.detailContainer}>
-                            <Text style={styles.distance}>Distance Travelled: {Utils.getDistanceString()}</Text>
+                            <Text style={styles.distance}>Distance Travelled: {Utils.getDistanceString(this.state.distanceTravelled)}</Text>
                         </View> : null}
                 </Content>
             </View>

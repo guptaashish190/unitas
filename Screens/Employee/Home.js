@@ -46,8 +46,7 @@ class Home extends Component {
             const user = snapshot.val();
 
             const newSessionId = shortid.generate();
-            firebase.database().ref(`Employees/${this.props.user.id}`).set({
-                ...user,
+            firebase.database().ref(`Employees/${this.props.user.id}`).update({
                 currentMapSessionID: newSessionId,
             }).then(() => {
                 this.props.setCurrentMapSessionID(newSessionId);
@@ -70,14 +69,23 @@ class Home extends Component {
         this.setState({
             confirmOfflineModal: false,
             confirmOnlineModal: false,
-        }, () => {
-            this.props.changeStatus(status);
-            this.forceUpdate();
+        }, async () => {
+            try {
+                await firebase.database().ref(`Employees/${this.props.user.id}`).update({
+                    status: status
+                });
+                this.props.changeStatus(status);
+                this.forceUpdate();
+            } catch (err) {
+                Toast.show({
+                    text: err.message || "Error occured",
+                    type: 'danger'
+                });
+            }
         });
     }
     _signOut = () => {
         this._onStatusChange('Offline');
-
         console.log("Signing out");
         firebase.auth().signOut().then(() => {
             this.props.navigation.navigate('ChooseType');
