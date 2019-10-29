@@ -52,9 +52,12 @@ const mapDispatchToProps = dispatch => ({
     toggleModal: () => dispatch(ToggleEnableLocationModal()),
 })
 
-const mapStateToProps = state => ({
-    isModalVisible: state.UserReducer.isEnableLocationModalVisible,
-})
+const mapStateToProps = state => {
+    console.log(state);
+    return ({
+        isModalVisible: state.UserReducer.isEnableLocationModalVisible,
+    })
+}
 
 const styles = StyleSheet.create({
     container: {

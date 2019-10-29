@@ -11,13 +11,6 @@ import Settings from '../Screens/Employee/Settings';
 
 export default createAppContainer(createDrawerNavigator({
 
-    Settings: {
-        screen: Settings,
-        navigationOptions: {
-            drawerLabel: 'Settings',
-            drawerIcon: () => <Icon fontSize={17} name="settings" type='MaterialCommunityIcons' />
-        }
-    },
     EmployeeHome: {
 
         screen: Home,
@@ -42,6 +35,13 @@ export default createAppContainer(createDrawerNavigator({
         navigationOptions: {
             drawerLabel: 'History',
             drawerIcon: () => <Icon fontSize={17} name="history" type='MaterialCommunityIcons' />
+        }
+    },
+    Settings: {
+        screen: Settings,
+        navigationOptions: {
+            drawerLabel: 'Settings',
+            drawerIcon: () => <Icon fontSize={17} name="settings" type='MaterialCommunityIcons' />
         }
     },
 }));

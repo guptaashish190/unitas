@@ -10,7 +10,7 @@ import firebase from 'firebase';
 import { PersistGate } from 'redux-persist/integration/react';
 
 import config from './config';
-import store from './store';
+import { store, persistor } from './store';
 import Colors from './constants/Colors';
 import MainNavigator from './Navigation/MainNavigator';
 import { firebase as firebaseConfig } from './config';
@@ -49,12 +49,12 @@ export default class App extends React.Component {
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
           <View style={{ width: '100%', height: Constants.statusBarHeight, backgroundColor: Colors.tintColor }} />
           <Provider store={store}>
-            {/* <PersistGate loading={null} persistor={persistor}> */}
-            <Root>
-              <LocationEnableModal />
-              <MainNavigator />
-            </Root>
-            {/* </PersistGate> */}
+            <PersistGate loading={null} persistor={persistor}>
+              <Root>
+                <LocationEnableModal />
+                <MainNavigator />
+              </Root>
+            </PersistGate>
           </Provider>
         </View>
       );
