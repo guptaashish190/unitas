@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import firebase from 'firebase';
 import { Toast, Spinner } from 'native-base';
 import shortid from 'shortid';
-
 import Utils from '../../utils';
 import HeaderComponent from '../../Components/Common/Header';
 import EmployeeStatusBar from '../../Components/Employee/EmployeeStatusBar';
@@ -21,6 +20,23 @@ class Home extends Component {
         loading: false,
         confirmOnlineModal: false,
     }
+
+    _mounted = true;
+
+    componentDidMount() {
+        const channelConfig = {
+            id: 'channelId',
+            name: 'Channel name',
+            description: 'Channel description',
+            enableVibration: false
+        };
+
+    }
+
+    componentWillUnmount() {
+        this._mounted = false;
+    }
+
     processStatusChange = (status) => {
 
         if (status === 'Active') {
@@ -76,8 +92,8 @@ class Home extends Component {
             confirmOnlineModal: !this.state.confirmOnlineModal
         });
     }
-    _onStatusChange = (status) => {
-        this.setState({
+    _onStatusChange = async (status) => {
+        await this.setState({
             confirmOfflineModal: false,
             confirmOnlineModal: false,
         }, async () => {
@@ -86,73 +102,84 @@ class Home extends Component {
                     status: status
                 });
                 this.props.changeStatus(status);
-                this.forceUpdate();
+                if (this._mounted) {
+                    this.forceUpdate();
+                }
             } catch (err) {
                 Toast.show({
                     text: err.message || "Error occured",
-                    type: 'danger'
+                    type: 'danger',
+                    duration: 3000,
                 });
             }
         });
     }
+
+
     _signOut = () => {
-        this._onStatusChange('Offline');
-        console.log("Signing out");
-        firebase.auth().signOut().then(() => {
-            this.props.setUser(null);
-            this.props.navigation.navigate('ChooseType');
+        this._onStatusChange('Offline').then(() => {
+            console.log("Signing out");
+            firebase.auth().signOut().then(() => {
+                this.props.setUser(null);
+                this.props.navigation.navigate('ChooseType');
+            });
         });
     }
 
     render() {
-        return (
-            <View style={styles.container}>
-                <HeaderComponent
-                    rightText="Sign Out"
-                    rightFunc={this._signOut}
-                    openDrawer={this.props.navigation.openDrawer}
-                    title={`Welcome ${this.props.user.name}!`} />
-                <Content contentContainerStyle={{ flex: 1 }}>
-                    <EmployeeStatusBar
-                        toggleStatus={this.processStatusChange}
-                        status={this.props.user.status} />
-                    {this.state.loading ? <Text style={styles.loading}>Loading Location...</Text> : null}
-                    {this.props.user.status === 'Offline' ?
-                        <View style={styles.yourMapWillShow}>
-                            <Text style={styles.yourMapWillShowText}>Your map will show up here!</Text>
-                        </View>
-                        :
-                        <EmployeeMap
-                            user={this.props.user}
-                            location={this.props.location} />
-                    }
-                    {this.props.user.status === 'Active' ?
-                        <Button danger style={styles.goOffline} onPress={() => this.processStatusChange('Offline')}>
-                            <Text style={styles.offlineText}>GO OFFLINE</Text>
-                        </Button>
-                        :
-                        null
-                    }
-                    {/* Confirm offline modal */}
-                    <ConfirmationModal
-                        isModalVisible={this.state.confirmOfflineModal}
-                        toggleModal={this.toggleConfirmOfflineModal}
-                        info="Confirm Offline"
-                        approvalText="Go Offline"
-                        onApprove={() => this._onStatusChange('Offline')}
-                    />
+        if (this.props.user) {
 
-                    {/* Confirm Online modal */}
-                    <ConfirmationModal
-                        isModalVisible={this.state.confirmOnlineModal}
-                        toggleModal={this.toggleConfirmOnlineModal}
-                        info="Confirm Online"
-                        approvalText="Go Online"
-                        onApprove={() => this.goOnline()}
-                    />
-                </Content>
-            </View>
-        );
+            return (
+                <View style={styles.container}>
+                    <HeaderComponent
+                        rightText="Sign Out"
+                        rightFunc={this._signOut}
+                        openDrawer={this.props.navigation.openDrawer}
+                        title={`Welcome ${this.props.user.name}!`} />
+                    <Content contentContainerStyle={{ flex: 1 }}>
+                        <EmployeeStatusBar
+                            toggleStatus={this.processStatusChange}
+                            status={this.props.user.status} />
+                        {this.state.loading ? <Text style={styles.loading}>Loading Location...</Text> : null}
+                        {this.props.user.status === 'Offline' ?
+                            <View style={styles.yourMapWillShow}>
+                                <Text style={styles.yourMapWillShowText}>Your map will show up here!</Text>
+                            </View>
+                            :
+                            <EmployeeMap
+                                user={this.props.user}
+                                location={this.props.location} />
+                        }
+                        {this.props.user.status === 'Active' ?
+                            <Button danger style={styles.goOffline} onPress={() => this.processStatusChange('Offline')}>
+                                <Text style={styles.offlineText}>GO OFFLINE</Text>
+                            </Button>
+                            :
+                            null
+                        }
+                        {/* Confirm offline modal */}
+                        <ConfirmationModal
+                            isModalVisible={this.state.confirmOfflineModal}
+                            toggleModal={this.toggleConfirmOfflineModal}
+                            info="Confirm Offline"
+                            approvalText="Go Offline"
+                            onApprove={() => this._onStatusChange('Offline')}
+                        />
+
+                        {/* Confirm Online modal */}
+                        <ConfirmationModal
+                            isModalVisible={this.state.confirmOnlineModal}
+                            toggleModal={this.toggleConfirmOnlineModal}
+                            info="Confirm Online"
+                            approvalText="Go Online"
+                            onApprove={() => this.goOnline()}
+                        />
+                    </Content>
+                </View>
+            );
+        } else {
+            return null;
+        }
     }
 }
 

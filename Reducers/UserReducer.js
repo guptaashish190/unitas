@@ -28,7 +28,9 @@ const UserReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case STATUS_CHANGE:
             let oldState = { ...state };
-            oldState.user.status = action.payload;
+            if (oldState.user) {
+                oldState.user.status = action.payload;
+            }
             return oldState;
         case TOGGLE_ENABLE_LOCATION_MODAL_VISIBLE:
             return { ...state, isEnableLocationModalVisible: !state.isEnableLocationModalVisible };

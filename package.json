@@ -12,6 +12,7 @@
     "@expo/vector-icons": "^10.0.0",
     "@firebase/firestore": "^1.6.3",
     "@react-native-community/async-storage": "^1.6.2",
+    "@voximplant/react-native-foreground-service": "^2.0.0",
     "expo": "^35.0.0",
     "expo-background-fetch": "^7.0.0",
     "expo-constants": "~7.0.0",

@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Colors from '../../constants/Colors';
 import Utils from '../../utils';
-import { Button } from 'native-base';
+import { Button, Icon } from 'native-base';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 class MapHistoryCard extends Component {
 
@@ -18,10 +19,16 @@ class MapHistoryCard extends Component {
         this.props.navigation.navigate('MapScreen', { mapId: this.props.mapId, map: this.props.map });
     }
 
-
     render() {
         return (
             <View style={styles.container}>
+
+                {/* Close Button */}
+                <View style={styles.close}>
+                    <TouchableOpacity onPress={() => this.props.delete()}>
+                        <Icon style={{ color: '#ff5959' }} name="close-circle" />
+                    </TouchableOpacity>
+                </View>
                 {/* Map Id */}
                 <Text style={styles.rowText}><Text style={styles.label}>Map ID: </Text>{this.props.mapId}</Text>
 
@@ -60,6 +67,13 @@ const styles = StyleSheet.create({
         padding: 10,
         margin: 10,
         alignSelf: 'flex-start'
+    },
+    close: {
+        position: 'absolute',
+        top: -10,
+        right: 20,
+        borderRadius: 100,
+        padding: 1,
     }
 });
 

@@ -27,7 +27,7 @@
       "supportsTablet": true
     },
     "android": {
-      "googleServicesFile": "./google-services.json"
+      "package": "com.unitas.track"
     }
   }
 }
