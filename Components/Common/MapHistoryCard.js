@@ -25,7 +25,7 @@ class MapHistoryCard extends Component {
 
                 {/* Close Button */}
                 <View style={styles.close}>
-                    <TouchableOpacity onPress={() => this.props.delete()}>
+                    <TouchableOpacity onPress={() => this.props.delete(this.props.mapId)}>
                         <Icon style={{ color: '#ff5959' }} name="close-circle" />
                     </TouchableOpacity>
                 </View>

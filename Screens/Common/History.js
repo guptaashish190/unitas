@@ -73,12 +73,10 @@ class History extends Component {
     }
 
     _getMaps = () => {
-        if (this.state.loading) {
-            return <Spinner />;
-        }
         if (this.state.mapIds) {
             return this.state.mapIds.map(mapId => {
                 return <MapHistoryCard
+                    delete={this.deleteHistoryCard}
                     navigation={this.props.navigation}
                     key={shortid.generate()}
                     map={this.state.maps[mapId]}
@@ -88,11 +86,31 @@ class History extends Component {
         }
     }
 
+    deleteHistoryCard = (id) => {
+        firebase.database().ref(`emp_locations/${this.state.empid}/${id}`).remove().then(() => {
+            this._getEmployeeMaps();
+            Toast.show({
+                text: 'Deleted Successfully',
+                duration: 1500,
+                type: 'success',
+            });
+        }).catch(() => {
+            Toast.show({
+                text: 'Error deleting the map',
+                duration: 1500,
+                type: 'danger'
+            });
+        });
+    }
+
     render() {
         return (
             <View style={styles.container}>
                 <HeaderComponent
                     goBack={this.props.navigation.goBack}
+                    loadingEnable
+                    reload={this._getEmployeeMaps}
+                    loading={this.state.loading}
                     openDrawer={this.props.navigation.openDrawer}
                     title={`${this.state.user ? "History: " + this.state.user.name : "History"}`} />
 

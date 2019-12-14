@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, Image, TouchableOpacity, View } from 'react-native';
-import { Header, Left, Body, Right, Button, Icon } from 'native-base';
+import { Header, Left, Body, Right, Button, Icon, Spinner } from 'native-base';
 import Colors from '../../constants/Colors';
 
 import Logo from '../../assets/images/icon.png';
@@ -77,6 +77,20 @@ class HeaderComponent extends Component {
         return null
     }
 
+    _getLoading = () => {
+        if (this.props.loadingEnable) {
+            if (!this.props.loading) {
+                return (
+                    <TouchableOpacity onPress={() => this.props.reload()}>
+                        <Text style={styles.reloadText}>Reload</Text>
+                    </TouchableOpacity>
+                )
+            }
+            return <Spinner animating={this.props.loading} color={Colors.tintColor} />
+        }
+        return null;
+    }
+
     render() {
         return (
             <Header style={styles.header}>
@@ -84,6 +98,7 @@ class HeaderComponent extends Component {
                 {this._getBody()}
                 {this._getRight()}
                 {this._getRightFunc()}
+                {this._getLoading()}
             </Header>
         );
     }
@@ -93,6 +108,11 @@ const styles = StyleSheet.create({
     header: {
         backgroundColor: 'white',
         alignItems: 'center',
+    },
+    reloadText: {
+        padding: 10,
+        fontWeight: 'bold',
+        color: Colors.tintColor,
     },
     icon: {
         width: 30,
