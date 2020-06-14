@@ -45,6 +45,10 @@ class Settings extends Component {
         }
     }
 
+    _deleteCurrentImage = async () => {
+        firebase.storage().ref().child('/images/');
+    }
+
     _setImage = async (uri) => {
         this.setState({
             loading: true
